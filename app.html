@@ -1,0 +1,1177 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<title>Dstars</title>
+<meta name="theme-color" content="#0B0B0D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dstars">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%230B0B0D'/%3E%3Cpath d='M90 24l21 46 50 6-37 34 10 50-44-25-44 25 10-50-37-34 50-6z' fill='%23E01B24'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- ==========================================================
+     THE ONLY LINES YOU NEED TO EDIT
+     Supabase -> Settings -> API
+       "Project URL"      goes in the first line
+       "anon public" key  goes in the second line
+     Never put the service_role key here.
+     ========================================================== -->
+<script>
+  const SUPABASE_URL = 'PASTE_YOUR_PROJECT_URL_HERE';
+  const SUPABASE_ANON_KEY = 'PASTE_YOUR_ANON_KEY_HERE';
+  const SITE_URL = '';   // optional: link back to your public website
+</script>
+<!-- ==========  nothing below needs editing  ========== -->
+
+<style>
+:root{
+  --red:#E01B24; --red-dark:#A80F17; --red-soft:rgba(224,27,36,.12);
+  --green:#22C55E; --amber:#F5A524;
+  --bg:#F0F0F5; --surface:#fff; --surface-2:rgba(0,0,0,.055); --press:#E6E3DE;
+  --text:#1C1C1E; --muted:#56565C; --border:rgba(0,0,0,.12);
+  --shadow:0 2px 6px rgba(0,0,0,.05), 0 10px 28px rgba(0,0,0,.07);
+  --r:22px; --tab-h:64px; --top-h:54px;
+  --safe-top:env(safe-area-inset-top,0px); --safe-bot:env(safe-area-inset-bottom,0px);
+  --ease:cubic-bezier(.32,.72,0,1); --tap:cubic-bezier(.25,.1,.25,1);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0B0B0D; --surface:#161619; --surface-2:rgba(255,255,255,.07); --press:#2A2A30;
+  --text:#F7F6F4; --muted:#9A9AA0; --border:rgba(255,255,255,.15);
+  --shadow:0 2px 6px rgba(0,0,0,.5), 0 10px 28px rgba(0,0,0,.55);
+}}
+:root[data-theme=dark]{
+  --bg:#0B0B0D; --surface:#161619; --surface-2:rgba(255,255,255,.07); --press:#2A2A30;
+  --text:#F7F6F4; --muted:#9A9AA0; --border:rgba(255,255,255,.15);
+  --shadow:0 2px 6px rgba(0,0,0,.5), 0 10px 28px rgba(0,0,0,.55);
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;height:100dvh;overscroll-behavior-y:none}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Manrope,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  font-feature-settings:'tnum' 1;display:flex;flex-direction:column;overflow:hidden;
+}
+[hidden]{display:none!important}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;
+  touch-action:manipulation;-webkit-user-select:none;user-select:none;
+  transition:transform .14s var(--tap),opacity .14s}
+button:active:not(:disabled){transform:scale(.95);opacity:.8}
+input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+::-webkit-scrollbar{width:0;height:0}
+
+/* top bar */
+.top{height:calc(var(--top-h) + var(--safe-top));padding:var(--safe-top) 12px 0;
+  display:flex;align-items:center;gap:2px;flex:0 0 auto;position:relative;z-index:20}
+.logo{display:flex;align-items:center;gap:8px;margin-right:auto;padding-left:4px;
+  font-weight:800;font-size:18px;letter-spacing:.01em}
+.ico{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;position:relative;
+  background:var(--surface);border:1px solid var(--border)}
+.badge{position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;padding:0 5px;
+  background:var(--red);color:#fff;border-radius:999px;font-size:10px;font-weight:800;
+  display:grid;place-items:center}
+
+/* screens */
+main{flex:1 1 auto;position:relative;overflow:hidden}
+.screen{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:0 0 calc(var(--tab-h) + var(--safe-bot) + 20px)}
+.screen.in{animation:fade .24s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.pad{padding:0 16px}
+.h1{font-size:26px;font-weight:800;letter-spacing:-.025em;margin:4px 0 2px;line-height:1.15}
+.sub{color:var(--muted);font-size:13.5px;margin:0}
+h2.sec{font-size:13px;font-weight:700;color:var(--muted);margin:22px 16px 10px}
+
+/* tabs */
+.tabs{position:absolute;left:0;right:0;bottom:0;z-index:40;
+  height:calc(var(--tab-h) + var(--safe-bot));padding-bottom:var(--safe-bot);
+  display:grid;grid-template-columns:repeat(5,1fr);align-items:center;
+  background:color-mix(in srgb,var(--surface) 90%,transparent);
+  backdrop-filter:blur(18px) saturate(1.6);-webkit-backdrop-filter:blur(18px) saturate(1.6);
+  border-top:1px solid var(--border)}
+.tab{display:grid;place-items:center;gap:3px;height:var(--tab-h);color:var(--muted);font-size:10.5px;font-weight:600}
+.tab.on{color:var(--text)}
+.tab.on svg{color:var(--red)}
+.tab svg{transition:transform .2s var(--ease)}
+.tab.on svg{transform:translateY(-1px) scale(1.06)}
+.mid svg{width:44px;height:44px;border-radius:50%;padding:11px;margin-top:-14px;
+  background:linear-gradient(145deg,var(--red),var(--red-dark));color:#fff!important;
+  box-shadow:0 5px 16px rgba(224,27,36,.4)}
+
+/* cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow)}
+.row{display:flex;gap:12px;align-items:center;padding:14px}
+.btn{display:block;width:100%;padding:14px;border-radius:15px;font-weight:700;font-size:14.5px;text-align:center}
+.btn-red{background:var(--red);color:#fff}
+.btn-line{background:var(--surface);border:1px solid var(--border)}
+.btn:disabled{opacity:.4}
+.chip{flex:0 0 auto;padding:9px 15px;border-radius:999px;font-size:13px;font-weight:700;
+  background:var(--surface);border:1px solid var(--border)}
+.chip.on{background:var(--red);color:#fff;border-color:var(--red)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 16px 10px}
+.pill{display:inline-flex;padding:4px 11px;border-radius:999px;font-size:11.5px;font-weight:700}
+.pill.ok{background:rgba(34,197,94,.16);color:var(--green)}
+.pill.bad{background:var(--red-soft);color:var(--red)}
+.none{color:var(--muted);font-size:13.5px;text-align:center;padding:34px 24px;line-height:1.6}
+
+/* home */
+.coachrail{display:flex;gap:12px;overflow-x:auto;padding:2px 16px 10px}
+.coach{flex:0 0 172px;border-radius:var(--r);padding:14px;color:#fff;text-align:left;
+  background:radial-gradient(130px 130px at 108% -18%,rgba(224,27,36,.6),transparent 70%),
+             linear-gradient(155deg,#2B2B31,#0B0B0D);border:1px solid rgba(255,255,255,.12)}
+.coach .av{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;font-weight:800;
+  background:linear-gradient(145deg,var(--red),var(--red-dark))}
+.coach h4{margin:11px 0 1px;font-size:15px;font-weight:700}
+.coach p{margin:0;font-size:11.5px;color:rgba(255,255,255,.62);line-height:1.35}
+.post{margin:0 16px 12px;border-radius:var(--r);overflow:hidden;width:calc(100% - 32px);
+  background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);text-align:left;display:block}
+.post .bn{height:92px;display:grid;place-items:center;color:#fff;font-weight:700;font-size:13px;
+  background:linear-gradient(120deg,var(--red),var(--red-dark))}
+.post .bd{padding:13px 14px}
+.post h4{margin:0;font-size:16px;font-weight:700;letter-spacing:-.015em}
+.post p{margin:4px 0 0;font-size:13px;color:var(--muted)}
+
+/* shop */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;padding:0 16px}
+.prod{border-radius:var(--r);overflow:hidden;background:var(--surface);
+  border:1px solid var(--border);box-shadow:var(--shadow);display:flex;flex-direction:column}
+.prod .img{height:104px;display:grid;place-items:center;font-size:32px;width:100%;
+  background:linear-gradient(145deg,var(--red),var(--red-dark))}
+.prod .inf{padding:10px 11px 11px;display:flex;flex-direction:column;flex:1}
+.prod h4{margin:0;font-size:13px;font-weight:700;line-height:1.28}
+.prod .ct{font-size:10.5px;color:var(--muted);margin:3px 0 0}
+.prod .ft{display:flex;align-items:flex-end;justify-content:space-between;margin-top:auto;padding-top:10px;gap:6px}
+.price{font-size:16px;font-weight:800;letter-spacing:-.02em}
+.order{background:var(--red);color:#fff;font-size:12px;font-weight:700;padding:8px 14px;border-radius:999px}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:70;opacity:0;transition:opacity .24s}
+.scrim.on{opacity:1}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:71;background:var(--surface);
+  border-radius:28px 28px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.3);
+  max-height:90%;overflow-y:auto;transform:translateY(100%);padding-bottom:var(--safe-bot)}
+.sheet.on{animation:up .4s var(--ease) forwards}
+.sheet.off{animation:down .22s ease-in forwards}
+@keyframes up{to{transform:translateY(0)}}
+@keyframes down{from{transform:translateY(0)}to{transform:translateY(100%)}}
+.grab{width:38px;height:4px;background:var(--border);border-radius:999px;margin:10px auto 2px}
+.sheet .bd{padding:8px 18px 22px}
+.sheet h3{margin:0;font-size:20px;font-weight:800;letter-spacing:-.02em}
+.lbl{font-size:12px;font-weight:700;color:var(--muted);margin-top:16px}
+.opt{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.opt button{padding:9px 14px;border-radius:12px;border:1.5px solid var(--border);
+  font-size:12.5px;font-weight:700;background:var(--surface-2)}
+.opt button.on{border-color:var(--red);background:var(--red-soft);color:var(--red)}
+.qty{display:flex;align-items:center;gap:14px;margin-top:8px}
+.qty button{width:42px;height:42px;border-radius:13px;background:var(--surface-2);
+  border:1.5px solid var(--border);font-size:20px;font-weight:700}
+.two{display:grid;grid-template-columns:1fr 1.6fr;gap:10px;margin-top:22px}
+.lrow{display:flex;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid var(--border);
+  width:100%;text-align:left}
+.lrow:last-child{border-bottom:0}
+.lrow .ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-size:19px;flex:0 0 auto;
+  background:linear-gradient(145deg,var(--red),var(--red-dark))}
+.lrow .tx{flex:1;min-width:0}
+.lrow .tx b{display:block;font-size:14px;font-weight:700}
+.lrow .tx span{display:block;font-size:11.5px;color:var(--muted)}
+.x{width:32px;height:32px;border-radius:50%;background:var(--surface-2);display:grid;place-items:center;flex:0 0 auto}
+
+/* analytics */
+.rail{position:absolute;right:10px;top:10px;z-index:35;display:flex;flex-direction:column;gap:7px}
+.rbtn{width:44px;height:44px;border-radius:15px;display:grid;place-items:center;
+  background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);font-size:17px}
+.rbtn.on{background:var(--red);color:#fff;border-color:var(--red)}
+.anw{padding-right:64px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:var(--shadow)}
+.stat .k{font-size:11.5px;color:var(--muted);font-weight:600}
+.stat .v{font-size:23px;font-weight:800;letter-spacing:-.025em;margin-top:2px}
+.bar{height:7px;background:var(--surface-2);border-radius:4px;margin-top:9px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;transition:width .6s var(--ease)}
+.wo{display:flex;gap:11px;align-items:center;padding:11px 13px;border-radius:16px;width:100%;text-align:left;
+  background:var(--surface);border:1px solid var(--border);margin-bottom:8px}
+.wo .n{width:36px;height:36px;border-radius:12px;background:var(--surface-2);display:grid;place-items:center;flex:0 0 auto}
+.wo h5{margin:0;font-size:13.5px;font-weight:700}
+.wo p{margin:1px 0 0;font-size:11px;color:var(--muted)}
+.body-map{width:100%;max-width:280px;margin:0 auto;display:block}
+
+/* profile / settings */
+.ring{width:84px;height:84px;border-radius:50%;padding:3px;flex:0 0 auto;position:relative;
+  background:conic-gradient(var(--red),#fff,var(--text),var(--red))}
+.ring.off{background:var(--border)}
+.ring .ph{width:100%;height:100%;border-radius:50%;border:3px solid var(--bg);
+  background:linear-gradient(145deg,#3A3A42,#0B0B0D);color:#fff;
+  display:grid;place-items:center;font-weight:800;font-size:23px}
+.mx{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;flex:1}
+.mx div{text-align:center}
+.mx b{display:block;font-size:18px;font-weight:800;letter-spacing:-.02em}
+.mx span{font-size:11px;color:var(--muted);font-weight:600}
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:0 3px}
+.pg button{aspect-ratio:1;display:grid;place-items:center;font-size:24px;border-radius:6px;
+  background:var(--surface-2);border:1px solid var(--border);width:100%}
+.grp{margin:0 16px 16px;border-radius:var(--r);overflow:hidden;background:var(--surface);border:1px solid var(--border)}
+.srow{display:flex;align-items:center;gap:12px;padding:15px 14px;border-bottom:1px solid var(--border);
+  width:100%;text-align:left}
+.srow:last-child{border-bottom:0}
+.srow .t{flex:1;min-width:0}
+.srow .t b{display:block;font-size:14px;font-weight:600}
+.srow .t span{font-size:11.5px;color:var(--muted)}
+.srow .val{font-size:12.5px;color:var(--muted);font-weight:600}
+.seg{display:flex;gap:5px;background:var(--surface-2);padding:4px;border-radius:13px}
+.seg button{flex:1;padding:10px;border-radius:10px;font-size:12px;font-weight:700}
+.seg button.on{background:var(--surface);box-shadow:var(--shadow)}
+.sw{width:48px;height:28px;border-radius:999px;background:var(--border);position:relative;flex:0 0 auto;
+  transition:background .2s}
+.sw i{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;
+  transition:transform .26s var(--ease);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.sw.on{background:var(--green)} .sw.on i{transform:translateX(20px)}
+.ver{text-align:center;font-size:11.5px;color:var(--muted);padding:6px 0 26px}
+.fld{width:100%;padding:13px 14px;border-radius:14px;background:var(--surface-2);
+  border:1.5px solid var(--border);font-size:14px;outline:none;margin-top:6px}
+.fld:focus{border-color:var(--red)}
+
+/* auth */
+#auth{position:fixed;inset:0;z-index:100;background:var(--bg);overflow-y:auto;
+  padding:calc(var(--safe-top) + 26px) 26px calc(var(--safe-bot) + 26px)}
+#auth h1{font-size:34px;font-weight:800;letter-spacing:-.035em;line-height:1.08;margin:0 0 8px}
+#auth .fld{margin-bottom:10px;background:var(--surface);padding:15px 16px;border-radius:15px}
+.ck{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;margin-top:14px;
+  font-size:13px;color:var(--muted);line-height:1.5}
+.ck input{width:19px;height:19px;margin-top:2px;accent-color:#E01B24}
+.err{color:var(--red);font-size:13.5px;font-weight:600;margin:14px 0 0}
+.err.ok{color:var(--green)}
+
+#toast{position:fixed;left:50%;bottom:calc(var(--tab-h) + var(--safe-bot) + 16px);
+  transform:translate(-50%,14px);background:var(--text);color:var(--bg);
+  padding:12px 20px;border-radius:999px;font-size:13px;font-weight:700;z-index:90;
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .26s var(--ease);max-width:86%;text-align:center}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+#flag{background:var(--amber);color:#1C1C1E;font-size:13px;font-weight:600;padding:9px 16px;text-align:center}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<div id="flag" hidden></div>
+
+<header class="top" id="top">
+  <div class="logo">
+    <svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 1.6l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 16.8 5.9 20.2l1.4-6.8L2.2 8.7l6.9-.8z" fill="#E01B24"/></svg>
+    DSTARS
+  </div>
+  <button class="ico" id="cartBtn" aria-label="Cart">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6h15l-1.6 8.5a2 2 0 01-2 1.6H9.2a2 2 0 01-2-1.6L5.4 4H2.6"/><circle cx="9.5" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg>
+    <i class="badge" id="cartBadge" hidden>0</i>
+  </button>
+  <button class="ico" id="bellBtn" aria-label="Notifications">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M18 9a6 6 0 00-12 0c0 6-2.2 7-2.2 7h16.4S18 15 18 9"/><path d="M13.7 20a2 2 0 01-3.4 0"/></svg>
+    <i class="badge" id="bellBadge" hidden>0</i>
+  </button>
+  <button class="ico" id="setBtn" hidden aria-label="Settings">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><circle cx="12" cy="12" r="3.1"/><path d="M19.4 14.6a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-2.9 1.2v.2a2 2 0 11-4 0v-.1a1.7 1.7 0 00-2.9-1.2l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00-1.2-2.9H3a2 2 0 110-4h.1a1.7 1.7 0 001.2-2.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 002.9-1.2V3a2 2 0 114 0v.1a1.7 1.7 0 002.9 1.2l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 001.2 2.9h.2a2 2 0 110 4h-.1a1.7 1.7 0 00-1.6 1.2z"/></svg>
+  </button>
+</header>
+
+<main>
+  <section class="screen" id="s-home"></section>
+  <section class="screen" id="s-shop" hidden></section>
+  <section class="screen" id="s-chat" hidden></section>
+  <section class="screen" id="s-stats" hidden></section>
+  <section class="screen" id="s-me" hidden></section>
+  <section class="screen" id="s-settings" hidden></section>
+  <div class="rail" id="rail" hidden></div>
+</main>
+
+<nav class="tabs" id="tabs">
+  <button class="tab on" data-t="home"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 9.5V20h13V9.5"/></svg><span>Home</span></button>
+  <button class="tab" data-t="shop"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 3h9l1.5 4.5v12a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 016 19.5v-12z"/><path d="M6 7.5h12M10 12h4"/></svg><span>Shop</span></button>
+  <button class="tab mid" data-t="chat"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8 8 0 01-11.6 7.1L3.5 20.5l1.9-5.7A8 8 0 1121 11.5z"/></svg><span>Mr. D</span></button>
+  <button class="tab" data-t="stats"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M4 20V9M10 20V4M16 20v-7M22 20H2"/></svg><span>Progress</span></button>
+  <button class="tab" data-t="me"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20a7.5 7.5 0 0115 0"/></svg><span>Profile</span></button>
+</nav>
+
+<div id="toast"></div>
+<div class="scrim" id="scrim" hidden></div>
+<div class="sheet" id="sheet" hidden></div>
+
+<div id="auth" hidden>
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:26px">
+    <svg width="28" height="28" viewBox="0 0 24 24"><path d="M12 1.6l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 16.8 5.9 20.2l1.4-6.8L2.2 8.7l6.9-.8z" fill="#E01B24"/></svg>
+    <b style="font-size:20px;font-weight:800;letter-spacing:-.02em">DSTARS</b>
+  </div>
+  <h1 id="aTitle">Train like<br>it counts.</h1>
+  <p class="sub" id="aSub" style="margin-bottom:22px">Log in to pick up where you left off.</p>
+
+  <div class="seg" style="margin-bottom:18px">
+    <button class="on" id="tIn">Log in</button>
+    <button id="tUp">Be a member</button>
+  </div>
+
+  <div id="upOnly" hidden>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <input class="fld" id="aFirst" placeholder="First name" style="margin-top:0">
+      <input class="fld" id="aLast" placeholder="Last name" style="margin-top:0">
+    </div>
+    <input class="fld" id="aPhone" type="tel" placeholder="Phone number" style="margin-top:0">
+    <input class="fld" id="aDob" type="date" placeholder="Date of birth" style="margin-top:0">
+    <p class="sub" style="font-size:11.5px;margin:-4px 0 10px">Dstars membership is 18 and over.</p>
+  </div>
+
+  <input class="fld" id="aEmail" type="email" placeholder="Email" autocomplete="username" style="margin-top:0">
+  <input class="fld" id="aPass" type="password" placeholder="Password" autocomplete="current-password" style="margin-top:0">
+
+  <div id="consents" hidden>
+    <label class="ck"><input type="checkbox" id="ckTerms">
+      <span>I accept the terms and the privacy policy.</span></label>
+    <label class="ck"><input type="checkbox" id="ckHealth">
+      <span>I consent to Dstars handling my <b style="color:var(--text)">health data</b> &mdash; body scans,
+      nutrition logs and measurements. Separate from the terms, and I can withdraw it any time in Settings.</span></label>
+  </div>
+
+  <p class="err" id="aErr" hidden></p>
+  <button class="btn btn-red" style="margin-top:20px" id="aGo">Log in</button>
+  <p class="sub" style="text-align:center;font-size:12px;margin-top:18px" id="aFoot"></p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+/* ============================================================
+   Dstars member app — runs in the browser, reads your Supabase.
+   Add to your phone's home screen and it behaves like an app.
+   ============================================================ */
+const $ = (s) => document.querySelector(s);
+const peso = (n) => '\u20B1' + Number(n).toLocaleString('en-PH', { maximumFractionDigits: 0 });
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g,
+  (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+const dayfmt = (d) => new Date(d).toLocaleDateString('en-PH', { day:'numeric', month:'short', year:'numeric' });
+
+let db = null, me = null, profile = null, cart = [], notifs = [], tab = 'home';
+
+if (SUPABASE_URL.indexOf('http') === 0 && SUPABASE_ANON_KEY.length > 20 && window.supabase) {
+  db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+} else {
+  const f = $('#flag'); f.hidden = false;
+  f.textContent = 'Not connected. Fill in SUPABASE_URL and SUPABASE_ANON_KEY at the top of this file.';
+}
+
+/* ---------- theme ---------- */
+let theme = 'system';
+try { theme = localStorage.getItem('ds_theme') || 'system'; } catch (e) {}
+function applyTheme() {
+  if (theme === 'system') document.documentElement.removeAttribute('data-theme');
+  else document.documentElement.setAttribute('data-theme', theme);
+  try { localStorage.setItem('ds_theme', theme); } catch (e) {}
+}
+applyTheme();
+function setTheme(t) { theme = t; applyTheme(); renderSettings(); toast('Appearance: ' + t); }
+
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(t._x); t._x = setTimeout(() => t.classList.remove('on'), 2200);
+}
+
+/* ---------- sheets ---------- */
+let sheetOpen = false;
+function openSheet(html) {
+  $('#sheet').innerHTML = html;
+  if (sheetOpen) return;
+  $('#scrim').hidden = false;
+  requestAnimationFrame(() => $('#scrim').classList.add('on'));
+  const s = $('#sheet'); s.hidden = false; s.scrollTop = 0;
+  s.classList.remove('off'); s.classList.add('on'); sheetOpen = true;
+}
+function closeSheet() {
+  if (!sheetOpen) return;
+  sheetOpen = false;
+  $('#scrim').classList.remove('on');
+  const s = $('#sheet'); s.classList.remove('on'); s.classList.add('off');
+  setTimeout(() => { s.hidden = true; s.classList.remove('off'); $('#scrim').hidden = true; }, 230);
+}
+$('#scrim').onclick = closeSheet;
+const head = (t, sub) => '<div class="grab"></div><div class="bd"><h3>' + esc(t) + '</h3>' +
+  (sub ? '<p class="sub" style="margin-top:4px">' + esc(sub) + '</p>' : '');
+
+/* ---------- auth ---------- */
+let mode = 'in';
+function setMode(m) {
+  mode = m;
+  const up = m === 'up';
+  $('#upOnly').hidden = !up;
+  $('#consents').hidden = !up;
+  $('#tIn').classList.toggle('on', !up);
+  $('#tUp').classList.toggle('on', up);
+  $('#aGo').textContent = up ? 'Create my account' : 'Log in';
+  $('#aTitle').innerHTML = up ? 'Start where<br>you are.' : 'Train like<br>it counts.';
+  $('#aSub').textContent = up ? 'A few fields. The rest can wait.' : 'Log in to pick up where you left off.';
+  $('#aErr').hidden = true;
+}
+$('#tIn').onclick = () => setMode('in');
+$('#tUp').onclick = () => setMode('up');
+
+function aErr(msg, ok) {
+  const e = $('#aErr'); e.hidden = false; e.textContent = msg; e.classList.toggle('ok', !!ok);
+}
+
+$('#aGo').onclick = async function () {
+  if (!db) return aErr('Not connected to the database yet.');
+  const email = $('#aEmail').value.trim(), pass = $('#aPass').value;
+  const btn = $('#aGo'); btn.disabled = true;
+  try {
+    if (mode === 'in') {
+      const r = await db.auth.signInWithPassword({ email, password: pass });
+      if (r.error) throw r.error;
+      await boot();
+    } else {
+      if (!$('#ckTerms').checked) throw new Error('Please accept the terms to continue.');
+      const dob = $('#aDob').value;
+      const age = (Date.now() - new Date(dob).getTime()) / 3.15576e10;
+      if (!(age >= 18)) throw new Error('Dstars membership is 18 and over.');
+
+      const r = await db.auth.signUp({
+        email, password: pass,
+        options: { data: {
+          first_name: $('#aFirst').value.trim(),
+          last_name: $('#aLast').value.trim(),
+          phone: $('#aPhone').value.trim()
+        } }
+      });
+      if (r.error) throw r.error;
+      if (r.data.user) {
+        try {
+          await db.from('profiles').update({ date_of_birth: dob }).eq('id', r.data.user.id);
+          await db.from('consents').insert({
+            user_id: r.data.user.id, kind: 'health_data',
+            granted: $('#ckHealth').checked, granted_at: new Date().toISOString()
+          });
+        } catch (e) { console.error(e); }
+      }
+      if (r.data.session) await boot();
+      else aErr('Account created. Check your email to confirm it, then log in.', true);
+    }
+  } catch (e) {
+    aErr(e.message || 'Something went wrong.');
+  } finally { btn.disabled = false; }
+};
+
+async function signOut() { await db.auth.signOut(); location.reload(); }
+
+/* ---------- navigation ---------- */
+const SCREENS = ['home','shop','chat','stats','me','settings'];
+function go(t) {
+  if (SCREENS.indexOf(t) < 0) return;
+  tab = t;
+  SCREENS.forEach((k) => { $('#s-' + k).hidden = (k !== t); });
+  const cur = $('#s-' + t);
+  cur.classList.remove('in'); void cur.offsetWidth; cur.classList.add('in'); cur.scrollTop = 0;
+  document.querySelectorAll('.tab').forEach((b) =>
+    b.classList.toggle('on', b.dataset.t === t || (t === 'settings' && b.dataset.t === 'me')));
+  const prof = (t === 'me' || t === 'settings');
+  $('#setBtn').hidden = !prof;
+  $('#rail').hidden = (t !== 'stats');
+  render();
+}
+document.querySelectorAll('.tab').forEach((b) => { b.onclick = () => go(b.dataset.t); });
+$('#setBtn').onclick = () => go('settings');
+$('#cartBtn').onclick = () => drawCart();
+$('#bellBtn').onclick = () => drawNotifs();
+
+function render() {
+  if (tab === 'home') renderHome();
+  if (tab === 'shop') renderShop();
+  if (tab === 'chat') renderChat();
+  if (tab === 'stats') renderStats();
+  if (tab === 'me') renderMe();
+  if (tab === 'settings') renderSettings();
+  badges();
+}
+function badges() {
+  const c = $('#cartBadge'), n = $('#bellBadge');
+  const units = cart.reduce((a, b) => a + b.qty, 0);
+  c.hidden = units === 0; c.textContent = units;
+  const unread = notifs.filter((x) => !x.read_at).length;
+  n.hidden = unread === 0; n.textContent = unread;
+}
+
+/* ---------- data cache ---------- */
+const D = { coaches: [], posts: [], branch: null, cats: [], products: [],
+            membership: null, metrics: null, assessment: null, workouts: [],
+            nutrition: { cal:0, pro:0, carb:0, fat:0 }, target: null, checkins: 0 };
+
+async function loadAll() {
+  const today = new Date().toISOString().slice(0, 10);
+  const res = await Promise.all([
+    db.from('coach_profiles').select('headline,years_experience,specialties,profiles(first_name,last_name)')
+      .eq('is_published', true).order('sort_order').limit(8),
+    db.from('posts').select('*').not('published_at','is',null)
+      .order('is_pinned',{ascending:false}).order('published_at',{ascending:false}).limit(8),
+    db.from('branches').select('*').eq('is_active', true).order('name'),
+    db.from('product_categories').select('*').eq('is_active', true).order('sort_order'),
+    db.from('products').select('*, product_categories(name,slug), product_variants(*)')
+      .eq('is_active', true).order('sort_order'),
+    db.from('memberships').select('*, membership_plans(name,price)').eq('user_id', me.id)
+      .order('expires_at',{ascending:false}).limit(1).maybeSingle(),
+    db.from('body_metrics').select('*').eq('user_id', me.id)
+      .order('recorded_at',{ascending:false}).limit(1).maybeSingle(),
+    db.from('muscle_assessments').select('*').eq('user_id', me.id)
+      .order('assessed_at',{ascending:false}).limit(1).maybeSingle(),
+    db.from('workouts').select('*').eq('is_active', true),
+    db.from('nutrition_logs').select('calories,protein_g,carbs_g,fat_g').eq('user_id', me.id).gte('logged_at', today),
+    db.from('nutrition_targets').select('*').eq('user_id', me.id)
+      .order('effective_from',{ascending:false}).limit(1).maybeSingle(),
+    db.from('notifications').select('*').order('created_at',{ascending:false}).limit(20),
+    db.from('check_ins').select('id').eq('user_id', me.id)
+      .gte('checked_in_at', new Date(Date.now() - 7*864e5).toISOString())
+  ]);
+
+  D.coaches = res[0].data || [];
+  D.posts = res[1].data || [];
+  D.branch = (res[2].data || [])[0] || null;
+  D.branches = res[2].data || [];
+  D.cats = res[3].data || [];
+  D.products = res[4].data || [];
+  D.membership = res[5].data;
+  D.metrics = res[6].data;
+  D.assessment = res[7].data;
+  D.workouts = res[8].data || [];
+  const logs = res[9].data || [];
+  const sum = (k) => Math.round(logs.reduce((a, r) => a + (Number(r[k]) || 0), 0));
+  D.nutrition = { cal: sum('calories'), pro: sum('protein_g'), carb: sum('carbs_g'), fat: sum('fat_g') };
+  D.target = res[10].data;
+  notifs = res[11].data || [];
+  D.checkins = (res[12].data || []).length;
+
+  await loadCart();
+}
+
+async function loadCart() {
+  let c = await db.from('carts').select('id').eq('user_id', me.id).maybeSingle();
+  if (!c.data) c = await db.from('carts').insert({ user_id: me.id }).select('id').single();
+  D.cartId = c.data ? c.data.id : null;
+  if (!D.cartId) { cart = []; return; }
+  const items = await db.from('cart_items')
+    .select('id,qty,product_variants(id,price,stock_qty,flavor,weight_label,products(name))')
+    .eq('cart_id', D.cartId);
+  cart = (items.data || []).map((i) => ({
+    id: i.id, qty: i.qty, v: i.product_variants,
+    name: i.product_variants && i.product_variants.products ? i.product_variants.products.name : '',
+    price: i.product_variants ? Number(i.product_variants.price) : 0
+  }));
+}
+
+/* ---------- HOME ---------- */
+function renderHome() {
+  const m = D.membership;
+  const expired = m && new Date(m.expires_at) < new Date();
+  $('#s-home').innerHTML =
+    '<div class="pad" style="padding-top:4px">' +
+      '<p class="sub">' + new Date().toLocaleDateString('en-PH',{weekday:'long',day:'numeric',month:'long'}) + '</p>' +
+      '<h1 class="h1">' + greet() + ', ' + esc(profile ? profile.first_name : 'there') + '.</h1>' +
+    '</div>' +
+
+    (m ?
+      '<div class="pad" style="margin-top:14px"><div class="card" style="padding:15px">' +
+        '<div style="display:flex;align-items:center;gap:10px">' +
+          '<div><p class="sub" style="font-size:11.5px">Membership</p>' +
+          '<b style="font-size:16px">' + esc(m.membership_plans ? m.membership_plans.name : 'Member') + '</b></div>' +
+          '<span class="pill ' + (expired ? 'bad' : 'ok') + '" style="margin-left:auto">' +
+            (expired ? 'Expired' : 'Active') + '</span>' +
+        '</div>' +
+        '<p class="sub" style="margin-top:8px">' + esc(m.membership_number) + ' \u00b7 ' +
+          (expired ? 'expired ' : 'valid until ') + dayfmt(m.expires_at) + '</p>' +
+        (expired ? '<button class="btn btn-red" style="margin-top:12px" onclick="toast(\'Renew at the front desk\')">Renew</button>' : '') +
+      '</div></div>'
+      :
+      '<div class="pad" style="margin-top:14px"><div class="card" style="padding:16px">' +
+        '<b style="font-size:15px">No membership yet</b>' +
+        '<p class="sub" style="margin-top:4px">Pick a plan and finish signing up at any branch. Bring one valid ID.</p>' +
+      '</div></div>') +
+
+    (D.branch ?
+      '<div class="pad" style="margin-top:12px"><div class="card row">' +
+        '<div style="width:44px;height:44px;border-radius:14px;background:var(--red-soft);display:grid;place-items:center;font-size:19px">\u{1F4CD}</div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<b style="font-size:14px;display:block">' + esc(D.branch.name) + '</b>' +
+          '<span class="sub" style="font-size:11.5px">' + esc(D.branch.address) + '</span>' +
+        '</div>' +
+        '<button class="order" onclick="checkIn()">Check in</button>' +
+      '</div></div>' : '') +
+
+    '<h2 class="sec">Dstars coaches</h2>' +
+    (D.coaches.length ?
+      '<div class="coachrail">' + D.coaches.map((c) => {
+        const p = c.profiles || {};
+        return '<div class="coach">' +
+          '<div class="av">' + esc((p.first_name||'?')[0]) + esc((p.last_name||'')[0]||'') + '</div>' +
+          '<h4>' + esc(p.first_name) + ' ' + esc(p.last_name) + '</h4>' +
+          '<p>' + esc(c.headline) + '</p>' +
+          '<p style="margin-top:9px;font-size:11px;color:rgba(255,255,255,.45)">' +
+            (c.years_experience || '\u2014') + ' yrs experience</p></div>';
+      }).join('') + '</div>'
+      : '<p class="none">Coaches appear here once an admin approves their account.</p>') +
+
+    '<h2 class="sec">Trends and updates</h2>' +
+    (D.posts.length ? D.posts.map((p, i) =>
+      '<button class="post" onclick="openPost(' + i + ')">' +
+        '<div class="bn">' + esc(p.kind) + '</div>' +
+        '<div class="bd">' +
+          (p.is_pinned ? '<span class="pill bad" style="margin-bottom:7px">Pinned</span>' : '') +
+          '<h4>' + esc(p.title) + '</h4><p>' + esc(p.body) + '</p>' +
+          '<p class="sub" style="font-size:11.5px;margin-top:10px">' + dayfmt(p.published_at) + '</p>' +
+        '</div></button>').join('')
+      : '<p class="none">Nothing posted yet.</p>');
+}
+function greet() { const h = new Date().getHours(); return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'; }
+
+async function checkIn() {
+  if (!D.branch) return;
+  const r = await db.from('check_ins').insert({ user_id: me.id, branch_id: D.branch.id });
+  toast(r.error ? r.error.message : 'Checked in at ' + D.branch.name);
+  if (!r.error) D.checkins++;
+}
+function openPost(i) {
+  const p = D.posts[i];
+  openSheet(head(p.title, dayfmt(p.published_at)) +
+    '<p style="margin-top:12px;line-height:1.6;color:var(--muted)">' + esc(p.body) + '</p>' +
+    '<button class="btn btn-line" style="margin-top:20px" onclick="closeSheet()">Close</button></div>');
+}
+
+/* ---------- SHOP ---------- */
+let cat = null;
+function setCat(c) { cat = c; renderShop(); }
+function renderShop() {
+  const list = D.products.filter((p) => !cat || (p.product_categories && p.product_categories.slug === cat));
+  $('#s-shop').innerHTML =
+    '<div class="pad" style="padding-top:4px"><h1 class="h1">Supplements</h1>' +
+    '<p class="sub">Reserve here, pay and collect at the front desk.</p></div>' +
+    '<div class="chips">' +
+      '<button class="chip ' + (!cat ? 'on' : '') + '" onclick="setCat(null)">All</button>' +
+      D.cats.map((c) => '<button class="chip ' + (cat === c.slug ? 'on' : '') + '" onclick="setCat(\'' +
+        esc(c.slug) + '\')">' + esc(c.icon || '') + ' ' + esc(c.name) + '</button>').join('') +
+    '</div>' +
+    (list.length ?
+      '<div class="grid">' + list.map((p) => {
+        const stock = (p.product_variants || []).filter((v) => v.is_active && v.stock_qty > 0);
+        return '<article class="prod">' +
+          '<button class="img" onclick="openProduct(\'' + p.id + '\')">\u{1F4AA}</button>' +
+          '<div class="inf"><h4>' + esc(p.name) + '</h4>' +
+          '<p class="ct">' + esc(p.product_categories ? p.product_categories.name : '') + '</p>' +
+          '<div class="ft"><span class="price">' + peso(p.base_price) + '</span>' +
+          (stock.length ? '<button class="order" onclick="openProduct(\'' + p.id + '\')">Order</button>'
+                        : '<span class="sub" style="font-size:11px;font-weight:700">Out of stock</span>') +
+          '</div></div></article>';
+      }).join('') + '</div>'
+      : '<p class="none">Nothing in this category yet.</p>');
+}
+
+let sel = { id: null, f: 0, w: 0, q: 1 };
+function openProduct(id) { sel = { id: id, f: 0, w: 0, q: 1 }; drawProduct(); }
+function pick(k, v) { sel[k] = v; drawProduct(); }
+function bump(d) { sel.q = Math.max(1, sel.q + d); drawProduct(); }
+function variantsOf(p) { return (p.product_variants || []).filter((v) => v.is_active && v.stock_qty > 0); }
+
+function drawProduct() {
+  const p = D.products.find((x) => x.id === sel.id); if (!p) return;
+  const vs = variantsOf(p);
+  const flavors = [...new Set(vs.map((v) => v.flavor).filter(Boolean))];
+  const sizes = [...new Set(vs.map((v) => v.weight_label).filter(Boolean))];
+  const flavor = flavors.length ? flavors[Math.min(sel.f, flavors.length - 1)] : null;
+  const size = sizes.length ? sizes[Math.min(sel.w, sizes.length - 1)] : null;
+  const v = vs.find((x) => (flavor === null || x.flavor === flavor) && (size === null || x.weight_label === size));
+  const max = v ? v.stock_qty : 0;
+  if (sel.q > max && max > 0) sel.q = max;
+
+  openSheet('<div class="grab"></div><div class="bd">' +
+    '<div style="height:140px;border-radius:20px;display:grid;place-items:center;font-size:52px;margin-bottom:14px;' +
+      'background:linear-gradient(145deg,var(--red),var(--red-dark))">\u{1F4AA}</div>' +
+    '<h3>' + esc(p.name) + '</h3>' +
+    (p.description ? '<p class="sub" style="margin-top:6px;line-height:1.55">' + esc(p.description) + '</p>' : '') +
+    (flavors.length ? '<p class="lbl">Flavor</p><div class="opt">' + flavors.map((f, i) =>
+      '<button class="' + (f === flavor ? 'on' : '') + '" onclick="pick(\'f\',' + i + ')">' + esc(f) + '</button>').join('') + '</div>' : '') +
+    (sizes.length ? '<p class="lbl">Size</p><div class="opt">' + sizes.map((s, i) =>
+      '<button class="' + (s === size ? 'on' : '') + '" onclick="pick(\'w\',' + i + ')">' + esc(s) + '</button>').join('') + '</div>' : '') +
+    '<p class="lbl">Quantity</p><div class="qty">' +
+      '<button onclick="bump(-1)">\u2212</button><b style="font-size:17px;min-width:22px;text-align:center">' + sel.q + '</b>' +
+      '<button onclick="bump(1)">+</button>' +
+      '<span style="margin-left:auto;font-size:21px;font-weight:800;letter-spacing:-.03em">' +
+        (v ? peso(Number(v.price) * sel.q) : '\u2014') + '</span></div>' +
+    (v && v.stock_qty <= 5 ? '<p class="sub" style="color:var(--amber);font-weight:700;margin-top:8px">Only ' + v.stock_qty + ' left</p>' : '') +
+    '<div class="two"><button class="btn btn-line" onclick="closeSheet()">Cancel</button>' +
+    '<button class="btn btn-red" ' + (v ? '' : 'disabled') + ' onclick="addCart(\'' + (v ? v.id : '') + '\')">Add to cart</button></div>' +
+    '</div>');
+}
+
+async function addCart(variantId) {
+  if (!variantId) return;
+  const exist = cart.find((c) => c.v && c.v.id === variantId);
+  if (exist) await db.from('cart_items').update({ qty: exist.qty + sel.q }).eq('id', exist.id);
+  else await db.from('cart_items').insert({ cart_id: D.cartId, variant_id: variantId, qty: sel.q });
+  await loadCart(); badges(); closeSheet();
+  setTimeout(() => toast('Added to cart'), 160);
+}
+
+async function cartQty(id, d) {
+  const it = cart.find((c) => c.id === id); if (!it) return;
+  if (it.qty + d < 1) await db.from('cart_items').delete().eq('id', id);
+  else await db.from('cart_items').update({ qty: it.qty + d }).eq('id', id);
+  await loadCart(); badges(); drawCart();
+}
+
+function drawCart() {
+  const total = cart.reduce((a, c) => a + c.price * c.qty, 0);
+  openSheet(head('Your cart', cart.length ? cart.reduce((a,c)=>a+c.qty,0) + ' item(s)' : '') +
+    (cart.length === 0
+      ? '<p class="none">Nothing here yet.</p><button class="btn btn-line" onclick="closeSheet();go(\'shop\')">Browse supplements</button></div>'
+      : '<div style="margin-top:8px">' + cart.map((c) =>
+          '<div class="lrow"><div class="ic">\u{1F4AA}</div>' +
+          '<div class="tx"><b>' + esc(c.name) + '</b><span>' +
+            [c.v.flavor, c.v.weight_label].filter(Boolean).map(esc).join(' \u00b7 ') +
+            ' \u00b7 ' + peso(c.price) + ' each</span></div>' +
+          '<div style="display:flex;align-items:center;gap:7px">' +
+            '<button class="x" onclick="cartQty(\'' + c.id + '\',-1)">\u2212</button>' +
+            '<b style="min-width:16px;text-align:center">' + c.qty + '</b>' +
+            '<button class="x" onclick="cartQty(\'' + c.id + '\',1)">+</button></div></div>').join('') +
+        '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:18px">' +
+          '<span style="font-weight:700">Total</span>' +
+          '<span style="font-size:25px;font-weight:800;letter-spacing:-.03em">' + peso(total) + '</span></div>' +
+        '<button class="btn btn-red" style="margin-top:18px" onclick="reserve()">Reserve for pickup</button>' +
+        '<p class="sub" style="text-align:center;font-size:11.5px;margin-top:10px">' +
+          'Pay at the front desk when you collect. Online payment is coming.</p>' +
+        '</div></div>'));
+}
+
+/* Reserve, not pay. Card payment needs the server piece deployed, and a
+   gym with a front desk doesn't need it to start taking orders. */
+async function reserve() {
+  if (!cart.length) return;
+  const total = cart.reduce((a, c) => a + c.price * c.qty, 0);
+  const o = await db.from('orders').insert({
+    user_id: me.id, branch_id: D.branch ? D.branch.id : null,
+    status: 'pending', subtotal: total, total: total, fulfilment: 'pickup'
+  }).select().single();
+
+  if (o.error) { toast('Could not reserve: ' + o.error.message); return; }
+
+  await db.from('order_items').insert(cart.map((c) => ({
+    order_id: o.data.id, variant_id: c.v.id, qty: c.qty,
+    unit_price: c.price, line_total: c.price * c.qty,
+    name_snapshot: c.name,
+    variant_snapshot: [c.v.flavor, c.v.weight_label].filter(Boolean).join(' \u00b7 ')
+  })));
+  await db.from('cart_items').delete().eq('cart_id', D.cartId);
+  await loadCart(); badges(); closeSheet();
+  setTimeout(() => toast('Reserved \u00b7 ' + o.data.order_number + ' \u00b7 collect at the desk'), 200);
+}
+
+function drawNotifs() {
+  const unread = notifs.filter((n) => !n.read_at).length;
+  openSheet(head('Notifications', unread ? unread + ' unread' : 'All caught up') +
+    (notifs.length ? '<div style="margin-top:6px">' + notifs.map((n) =>
+      '<div class="lrow"><div class="ic" style="background:var(--surface-2);color:var(--text)">\u{1F514}</div>' +
+      '<div class="tx"><b>' + esc(n.title) + '</b><span>' + esc(n.body) + '</span></div>' +
+      (n.read_at ? '' : '<span style="width:8px;height:8px;border-radius:50%;background:var(--red)"></span>') +
+      '</div>').join('') + '</div>'
+      : '<p class="none">Nothing yet.</p>') +
+    '<button class="btn btn-line" style="margin-top:18px" onclick="markRead()">Mark all read</button></div>');
+}
+async function markRead() {
+  const ids = notifs.filter((n) => !n.read_at && n.user_id === me.id).map((n) => n.id);
+  if (ids.length) await db.from('notifications').update({ read_at: new Date().toISOString() }).in('id', ids);
+  notifs = notifs.map((n) => ({ ...n, read_at: n.read_at || new Date().toISOString() }));
+  badges(); drawNotifs();
+}
+
+/* ---------- MR. D ---------- */
+/* The AI conversation runs through a server function that needs an
+   Anthropic key, and that has to be deployed from a computer. Until
+   then this answers the factual questions straight from your records,
+   which covers most of what members actually ask. */
+function renderChat() {
+  const t = D.target, n = D.nutrition, m = D.membership;
+  const a = D.assessment;
+  const lag = a && a.per_muscle
+    ? Object.entries(a.per_muscle).filter(([,v]) => v.state === 'needs_work').map(([k]) => k)
+    : [];
+
+  $('#s-chat').innerHTML =
+    '<div class="pad" style="padding-top:4px">' +
+      '<h1 class="h1">Mr. D</h1>' +
+      '<p class="sub">Answers from your records.</p>' +
+    '</div>' +
+
+    '<div class="pad" style="margin-top:16px;display:grid;gap:10px">' +
+
+      '<div class="card" style="padding:16px">' +
+        '<p class="sub" style="font-size:11.5px;font-weight:700">Today\u2019s intake</p>' +
+        (t ?
+          '<p style="font-size:23px;font-weight:800;letter-spacing:-.025em;margin:4px 0 0">' +
+            n.cal + ' <span style="color:var(--muted);font-size:14px">/ ' + t.calories + ' kcal</span></p>' +
+          '<div class="bar"><i style="width:' + Math.min(100, n.cal/t.calories*100) + '%;background:var(--red)"></i></div>' +
+          '<p class="sub" style="margin-top:10px">' + n.pro + 'g protein of ' + t.protein_g + 'g. ' +
+            (t.protein_g - n.pro > 0 ? (t.protein_g - n.pro) + 'g still to go today.' : 'Target hit.') + '</p>'
+          : '<p class="sub" style="margin-top:6px">No targets set yet. Your coach can set them, or ask at the desk.</p>' +
+            '<p style="font-size:19px;font-weight:800;margin-top:8px">' + n.cal + ' kcal logged today</p>') +
+      '</div>' +
+
+      '<div class="card" style="padding:16px">' +
+        '<p class="sub" style="font-size:11.5px;font-weight:700">This week</p>' +
+        '<p style="font-size:23px;font-weight:800;letter-spacing:-.025em;margin:4px 0 0">' +
+          D.checkins + ' <span style="color:var(--muted);font-size:14px">gym visit' + (D.checkins === 1 ? '' : 's') + '</span></p>' +
+        '<p class="sub" style="margin-top:6px">' +
+          (D.checkins >= 4 ? 'Strong week. Keep it there.' :
+           D.checkins >= 2 ? 'On track. One or two more would do it.' :
+           'Quiet week so far \u2014 worth getting one in.') + '</p>' +
+      '</div>' +
+
+      '<div class="card" style="padding:16px">' +
+        '<p class="sub" style="font-size:11.5px;font-weight:700">Membership</p>' +
+        (m ? '<p style="font-size:17px;font-weight:700;margin:4px 0 0">' +
+              esc(m.membership_plans ? m.membership_plans.name : 'Member') + '</p>' +
+             '<p class="sub" style="margin-top:4px">' + esc(m.membership_number) + ' \u00b7 ' +
+             (new Date(m.expires_at) < new Date() ? 'expired ' : 'valid until ') + dayfmt(m.expires_at) + '</p>'
+           : '<p class="sub" style="margin-top:6px">No plan yet. Sign up at any branch.</p>') +
+      '</div>' +
+
+      (lag.length ?
+      '<div class="card" style="padding:16px">' +
+        '<p class="sub" style="font-size:11.5px;font-weight:700">Needs work</p>' +
+        '<p style="font-size:17px;font-weight:700;margin:4px 0 0;text-transform:capitalize">' + lag.join(', ') + '</p>' +
+        '<button class="btn btn-line" style="margin-top:12px" onclick="go(\'stats\')">Open your progress</button>' +
+      '</div>' : '') +
+
+      '<div class="card" style="padding:16px;border-style:dashed">' +
+        '<p style="font-weight:700;font-size:14.5px;margin:0">The AI conversation isn\u2019t switched on yet</p>' +
+        '<p class="sub" style="margin-top:6px;line-height:1.6">' +
+          'Food and body scanning, and talking to Mr. D in your own words, run on a server function ' +
+          'that has to be deployed from a computer. Everything above is live from your records right now.</p>' +
+      '</div>' +
+
+    '</div>';
+}
+
+/* ---------- PROGRESS ---------- */
+let view = 'summary';
+const VIEWS = [['summary','\u2261'],['nutrition','\u{1F37D}'],['muscle','\u{1F4AA}']];
+$('#rail').innerHTML = VIEWS.map(([v, g]) =>
+  '<button class="rbtn" data-v="' + v + '" onclick="setView(\'' + v + '\')">' + g + '</button>').join('');
+function setView(v) { view = v; renderStats(); }
+
+function renderStats() {
+  document.querySelectorAll('.rbtn').forEach((b) => b.classList.toggle('on', b.dataset.v === view));
+  const m = D.metrics, a = D.assessment, t = D.target, n = D.nutrition;
+  let body = '';
+
+  if (view === 'summary') {
+    body =
+      '<div class="pad" style="padding-top:4px"><h1 class="h1">Progress</h1>' +
+      '<p class="sub">' + (m ? 'Last updated ' + dayfmt(m.recorded_at) : 'Nothing recorded yet') + '</p></div>' +
+      '<div class="g2" style="margin-top:14px">' +
+        stat('Weight', m && m.weight_kg ? m.weight_kg + ' kg' : '\u2014') +
+        stat('Height', m && m.height_cm ? m.height_cm + ' cm' : '\u2014') +
+        stat('BMI', m && m.bmi ? m.bmi : '\u2014', m ? m.classification : '') +
+        stat('Gym visits', D.checkins, 'last 7 days') +
+      '</div>' +
+      (!m ? '<div class="pad" style="margin-top:12px"><div class="card" style="padding:16px">' +
+        '<p style="font-weight:700;margin:0">Add your metrics</p>' +
+        '<p class="sub" style="margin-top:5px">Weight and height let the app work out your BMI and track change over time.</p>' +
+        '<button class="btn btn-red" style="margin-top:12px" onclick="editMetrics()">Add now</button></div></div>' : '');
+  }
+
+  if (view === 'nutrition') {
+    const ring = (label, cur, tgt, colour) =>
+      '<div class="card" style="padding:14px">' +
+        '<p class="sub" style="font-size:11.5px;font-weight:600">' + label + '</p>' +
+        '<p style="font-size:23px;font-weight:800;letter-spacing:-.025em;margin-top:2px">' + cur +
+          (tgt ? ' <span style="color:var(--muted);font-size:14px">/ ' + tgt + '</span>' : '') + '</p>' +
+        (tgt ? '<div class="bar"><i style="width:' + Math.min(100, cur/tgt*100) + '%;background:' + colour + '"></i></div>' : '') +
+      '</div>';
+    body =
+      '<div class="pad" style="padding-top:4px"><h1 class="h1">Nutrition</h1><p class="sub">Logged today</p></div>' +
+      '<div class="pad" style="display:grid;gap:10px;margin-top:14px">' +
+        ring('Calories', n.cal, t ? t.calories : null, 'var(--red)') +
+        ring('Protein (g)', n.pro, t ? t.protein_g : null, 'var(--green)') +
+        ring('Carbs (g)', n.carb, t ? t.carbs_g : null, 'var(--amber)') +
+        ring('Fat (g)', n.fat, t ? t.fat_g : null, 'var(--muted)') +
+      '</div>' +
+      '<div class="pad" style="margin-top:12px"><button class="btn btn-line" onclick="logMeal()">Log a meal</button></div>';
+  }
+
+  if (view === 'muscle') {
+    const per = (a && a.per_muscle) || {};
+    body =
+      '<div class="pad" style="padding-top:4px"><h1 class="h1">Muscles</h1>' +
+      '<p class="sub">' + (a ? 'Assessed ' + dayfmt(a.assessed_at) : 'No assessment yet') + '</p></div>' +
+      '<div class="pad" style="margin-top:14px">' + bodyMap(per) + '</div>' +
+      (Object.keys(per).length
+        ? '<div class="pad" style="margin-top:14px;display:flex;flex-wrap:wrap;gap:6px">' +
+            Object.entries(per).map(([k, v]) =>
+              '<span class="chip" style="font-size:11.5px">' +
+                (v.state === 'on_track' ? '\u{1F7E2}' : '\u{1F534}') + ' ' + esc(k) + ' ' + v.score + '</span>').join('') +
+          '</div>' +
+          (a.summary ? '<p class="sub" style="padding:0 16px;margin-top:14px;line-height:1.6">' + esc(a.summary) + '</p>' : '')
+        : '<p class="none">A body scan fills this in. Scanning needs the server piece switched on.</p>') +
+      '<h2 class="sec">Workouts</h2><div class="pad">' +
+        (D.workouts.length ? D.workouts.slice(0, 40).map((w) =>
+          '<div class="wo"><div class="n">\u{1F3CB}\uFE0F</div><div style="min-width:0">' +
+          '<h5>' + esc(w.name) + '</h5><p>' + esc(w.instructions) + '</p></div></div>').join('')
+          : '<p class="none">No workouts in the library yet.</p>') +
+      '</div>';
+  }
+
+  $('#s-stats').innerHTML = '<div class="anw">' + body + '</div>';
+}
+
+function stat(k, v, note) {
+  return '<div class="stat"><div class="k">' + k + '</div><div class="v">' + v + '</div>' +
+    (note ? '<div class="sub" style="font-size:11px;margin-top:2px">' + esc(note) + '</div>' : '') + '</div>';
+}
+
+/* Front-facing body map. Colours come from a real assessment when one
+   exists. The rigged 3D version needs commissioned models. */
+function bodyMap(per) {
+  const fill = (g) => {
+    const m = per[g];
+    if (!m) return 'var(--surface-2)';
+    return m.state === 'on_track' ? 'var(--green)' : 'var(--red)';
+  };
+  return '<div class="card" style="padding:18px 12px">' +
+    '<svg class="body-map" viewBox="0 0 200 420" role="img" aria-label="Muscle development">' +
+    '<g fill="var(--surface-2)"><ellipse cx="100" cy="36" rx="22" ry="25"/><rect x="90" y="58" width="20" height="14"/></g>' +
+    '<g fill="' + fill('shoulders') + '"><path d="M60 74a20 18 0 00-16 20l4 16 18-8 4-24z"/><path d="M140 74a20 18 0 0116 20l-4 16-18-8-4-24z"/></g>' +
+    '<g fill="' + fill('chest') + '"><path d="M72 76h24v34c0 6-6 10-14 10s-14-6-12-14z"/><path d="M128 76h-24v34c0 6 6 10 14 10s14-6 12-14z"/></g>' +
+    '<g fill="' + fill('arms') + '"><path d="M48 108l-8 46 6 42 14-6-4-40 6-38z"/><path d="M152 108l8 46-6 42-14-6 4-40-6-38z"/></g>' +
+    '<g fill="' + fill('abs') + '"><path d="M80 122h40v62c0 8-8 14-20 14s-20-6-20-14z"/></g>' +
+    '<g fill="' + fill('glutes') + '"><path d="M74 198h52v34c0 10-12 16-26 16s-26-6-26-16z"/></g>' +
+    '<g fill="' + fill('legs') + '"><path d="M78 246h20v82l-6 14h-14l-6-14z"/><path d="M122 246h-20v82l6 14h14l6-14z"/></g>' +
+    '<g fill="' + fill('calves') + '"><path d="M80 344h16v52l-4 12h-10l-4-12z"/><path d="M120 344h-16v52l4 12h10l4-12z"/></g>' +
+    '</svg>' +
+    '<div style="display:flex;gap:14px;justify-content:center;margin-top:10px;font-size:11px;font-weight:600;color:var(--muted)">' +
+      '<span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:5px"></i>Needs work</span>' +
+      '<span><i style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:5px"></i>On track</span>' +
+    '</div></div>';
+}
+
+function logMeal() {
+  openSheet(head('Log a meal') +
+    '<p class="lbl" style="margin-top:12px">Meal</p>' +
+    '<div class="opt" id="mealOpt">' + ['breakfast','lunch','dinner','snack'].map((m, i) =>
+      '<button class="' + (i === 1 ? 'on' : '') + '" data-m="' + m + '" onclick="pickMeal(this)">' + m + '</button>').join('') + '</div>' +
+    '<p class="lbl">What was it</p><input class="fld" id="mName" placeholder="Chicken adobo with rice">' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+      '<div><p class="lbl">Calories</p><input class="fld" id="mCal" type="number" inputmode="numeric"></div>' +
+      '<div><p class="lbl">Protein (g)</p><input class="fld" id="mPro" type="number" inputmode="numeric"></div>' +
+    '</div>' +
+    '<div class="two"><button class="btn btn-line" onclick="closeSheet()">Cancel</button>' +
+    '<button class="btn btn-red" onclick="saveMeal()">Log it</button></div></div>');
+}
+function pickMeal(el) {
+  document.querySelectorAll('#mealOpt button').forEach((b) => b.classList.remove('on'));
+  el.classList.add('on');
+}
+async function saveMeal() {
+  const meal = (document.querySelector('#mealOpt .on') || {}).dataset;
+  const name = $('#mName').value.trim();
+  if (!name) return toast('Give it a name');
+  const r = await db.from('nutrition_logs').insert({
+    user_id: me.id, meal: meal ? meal.m : 'lunch', name: name,
+    calories: Number($('#mCal').value) || null, protein_g: Number($('#mPro').value) || null,
+    source: 'manual'
+  });
+  if (r.error) return toast(r.error.message);
+  closeSheet();
+  const today = new Date().toISOString().slice(0, 10);
+  const logs = await db.from('nutrition_logs').select('calories,protein_g,carbs_g,fat_g')
+    .eq('user_id', me.id).gte('logged_at', today);
+  const sum = (k) => Math.round((logs.data || []).reduce((a, r2) => a + (Number(r2[k]) || 0), 0));
+  D.nutrition = { cal: sum('calories'), pro: sum('protein_g'), carb: sum('carbs_g'), fat: sum('fat_g') };
+  renderStats(); setTimeout(() => toast('Logged'), 180);
+}
+
+/* ---------- PROFILE ---------- */
+function renderMe() {
+  const m = D.metrics;
+  $('#s-me').innerHTML =
+    '<div class="pad" style="padding-top:6px">' +
+      '<div style="display:flex;gap:16px;align-items:center">' +
+        '<div class="ring off"><div class="ph">' +
+          esc((profile.first_name||'?')[0]) + esc((profile.last_name||'')[0]||'') + '</div></div>' +
+        '<div class="mx">' +
+          '<div><b>' + (m && m.weight_kg ? m.weight_kg : '\u2014') + '</b><span>kg</span></div>' +
+          '<div><b>' + (m && m.height_cm ? m.height_cm : '\u2014') + '</b><span>cm</span></div>' +
+          '<div><b>' + (m && m.bmi ? m.bmi : '\u2014') + '</b><span>BMI</span></div>' +
+        '</div>' +
+      '</div>' +
+      '<h1 class="h1" style="margin-top:14px">' + esc(profile.first_name) + ' ' + esc(profile.last_name) + '</h1>' +
+      '<p class="sub">' + esc(profile.email) + '</p>' +
+      (profile.bio ? '<p style="margin-top:8px;font-size:13.5px;line-height:1.5">' + esc(profile.bio) + '</p>' : '') +
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px">' +
+        '<button class="btn btn-line" onclick="editMetrics()">Edit profile</button>' +
+        '<button class="btn btn-line" onclick="go(\'settings\')">Settings</button>' +
+      '</div>' +
+    '</div>' +
+    '<h2 class="sec">Your orders</h2><div class="pad" id="orderList"><p class="none">Loading\u2026</p></div>';
+  loadOrders();
+}
+
+async function loadOrders() {
+  const r = await db.from('orders').select('*, order_items(*)').eq('user_id', me.id)
+    .order('created_at', { ascending: false }).limit(10);
+  const rows = r.data || [];
+  const el = $('#orderList'); if (!el) return;
+  el.innerHTML = rows.length ? rows.map((o) =>
+    '<div class="card" style="padding:14px;margin-bottom:8px">' +
+      '<div style="display:flex;align-items:center;gap:10px">' +
+        '<b style="font-size:14px">' + esc(o.order_number) + '</b>' +
+        '<span class="pill ' + (o.status === 'completed' ? 'ok' : 'bad') + '">' + esc(o.status) + '</span>' +
+        '<span style="margin-left:auto;font-weight:800">' + peso(o.total) + '</span>' +
+      '</div>' +
+      '<p class="sub" style="margin-top:5px">' + dayfmt(o.created_at) + ' \u00b7 ' +
+        (o.order_items || []).length + ' item(s) \u00b7 ' + esc(o.fulfilment) + '</p>' +
+    '</div>').join('') : '<p class="none">No orders yet.</p>';
+}
+
+function editMetrics() {
+  const m = D.metrics || {};
+  openSheet(head('Edit profile') +
+    '<p class="lbl" style="margin-top:12px">Weight (kg)</p>' +
+    '<input class="fld" id="eW" type="number" step="0.1" inputmode="decimal" value="' + (m.weight_kg || '') + '">' +
+    '<p class="lbl">Height (cm)</p>' +
+    '<input class="fld" id="eH" type="number" inputmode="numeric" value="' + (m.height_cm || '') + '">' +
+    '<p class="lbl">Bio</p>' +
+    '<input class="fld" id="eB" value="' + esc(profile.bio || '') + '">' +
+    '<div class="two"><button class="btn btn-line" onclick="closeSheet()">Cancel</button>' +
+    '<button class="btn btn-red" onclick="saveMetrics()">Save</button></div></div>');
+}
+
+async function saveMetrics() {
+  const w = parseFloat($('#eW').value), h = parseFloat($('#eH').value), b = $('#eB').value.trim();
+  if (w && h) {
+    // BMI and the classification are worked out by the database, not here
+    const r = await db.from('body_metrics').insert({
+      user_id: me.id, weight_kg: w, height_cm: h, source: 'manual'
+    }).select().single();
+    if (r.error) return toast(r.error.message);
+    D.metrics = r.data;
+  }
+  await db.from('profiles').update({ bio: b }).eq('id', me.id);
+  profile.bio = b;
+  closeSheet(); render();
+  setTimeout(() => toast('Profile updated'), 180);
+}
+
+/* ---------- SETTINGS ---------- */
+let notifOn = true, healthConsent = null;
+
+function renderSettings() {
+  const m = D.membership;
+  const expired = m && new Date(m.expires_at) < new Date();
+  $('#s-settings').innerHTML =
+    '<div style="display:flex;align-items:center;padding:10px 12px 14px">' +
+      '<button class="ico" style="border:0;background:none" onclick="go(\'me\')">\u2039</button>' +
+      '<h3 style="flex:1;text-align:center;margin:0;font-size:17px;font-weight:700;margin-right:40px">Settings</h3>' +
+    '</div>' +
+
+    '<h2 class="sec" style="margin-top:0">General</h2>' +
+    '<div class="grp">' +
+      srow('Name', profile.first_name + ' ' + profile.last_name) +
+      srow('Email', profile.email) +
+      srow('Phone', profile.phone || '\u2014') +
+      srow('Member number', m ? m.membership_number : '\u2014') +
+      '<div class="srow"><div class="t"><b>Membership</b>' +
+        (m ? '<span>' + (expired ? 'Expired ' : 'Valid until ') + dayfmt(m.expires_at) + '</span>' : '<span>No plan yet</span>') +
+        '</div><span class="pill ' + (m && !expired ? 'ok' : 'bad') + '">' +
+        (m ? (expired ? 'Expired' : 'Active') : 'None') + '</span></div>' +
+      (expired || !m ? '<button class="srow" onclick="toast(\'Renew at the front desk\')">' +
+        '<div class="t"><b style="color:var(--red)">Renew membership</b>' +
+        '<span>Ask at any branch, or reserve a plan online soon</span></div><span class="val">\u203A</span></button>' : '') +
+    '</div>' +
+
+    '<div class="grp">' +
+      '<button class="srow" onclick="toggleNotif()">' +
+        '<div class="t"><b>Notifications</b><span>Class reminders, orders, coach messages</span></div>' +
+        '<span class="sw ' + (notifOn ? 'on' : '') + '"><i></i></span></button>' +
+      '<div class="srow" style="display:block">' +
+        '<div class="t" style="margin-bottom:9px"><b>Appearance</b></div>' +
+        '<div class="seg">' + ['light','dark','system'].map((t) =>
+          '<button class="' + (theme === t ? 'on' : '') + '" onclick="setTheme(\'' + t + '\')">' +
+          t[0].toUpperCase() + t.slice(1) + '</button>').join('') + '</div></div>' +
+    '</div>' +
+
+    '<h2 class="sec">Privacy and security</h2>' +
+    '<div class="grp">' +
+      '<div class="srow" style="display:block">' +
+        '<div style="display:flex;align-items:center"><div class="t"><b>Health data consent</b></div>' +
+        '<button class="sw ' + (healthConsent && healthConsent.granted ? 'on' : '') + '" onclick="toggleHealth()"><i></i></button></div>' +
+        '<p class="sub" style="font-size:11.5px;margin-top:6px;line-height:1.55">' +
+          'Covers body scans, nutrition logs and measurements. Withdrawing stops tracking. ' +
+          'Separate from the terms \u2014 you keep your membership either way.</p></div>' +
+      (SITE_URL ? '<a class="srow" href="' + esc(SITE_URL) + '/#legal"><div class="t"><b>Privacy and terms</b></div><span class="val">\u203A</span></a>' : '') +
+      '<button class="srow" onclick="deleteAccount()">' +
+        '<div class="t"><b style="color:var(--red)">Delete my account and data</b>' +
+        '<span>Required by the Data Privacy Act</span></div></button>' +
+    '</div>' +
+
+    '<div class="grp"><button class="srow" onclick="signOut()">' +
+      '<div class="t"><b style="color:var(--red)">Log out</b></div></button></div>' +
+    '<p class="ver">Dstars v1.0.0</p>';
+}
+function srow(k, v) {
+  return '<div class="srow"><div class="t"><b>' + esc(k) + '</b></div><span class="val">' + esc(v) + '</span></div>';
+}
+function toggleNotif() { notifOn = !notifOn; renderSettings(); toast(notifOn ? 'Notifications on' : 'Notifications off'); }
+
+async function toggleHealth() {
+  const now = !(healthConsent && healthConsent.granted);
+  if (!now && !confirm('Withdraw health-data consent? Scanning and tracking stop. Your existing records stay until you delete them.')) return;
+  const r = await db.from('consents').insert({
+    user_id: me.id, kind: 'health_data', granted: now,
+    granted_at: now ? new Date().toISOString() : null,
+    revoked_at: now ? null : new Date().toISOString()
+  }).select().single();
+  if (r.error) return toast(r.error.message);
+  healthConsent = r.data; renderSettings();
+  toast(now ? 'Consent given' : 'Consent withdrawn');
+}
+
+async function deleteAccount() {
+  if (!confirm('Delete your account? Training history, scans, orders and conversations all go. This cannot be undone.')) return;
+  await db.from('profiles').update({ deleted_at: new Date().toISOString() }).eq('id', me.id);
+  await db.auth.signOut();
+  location.reload();
+}
+
+/* ---------- boot ---------- */
+async function boot() {
+  if (!db) { $('#auth').hidden = false; return; }
+  const s = await db.auth.getSession();
+  me = s.data.session ? s.data.session.user : null;
+
+  if (!me) { $('#auth').hidden = false; setMode('in'); return; }
+
+  const p = await db.from('profiles').select('*').eq('id', me.id).maybeSingle();
+  profile = p.data;
+  if (!profile) { $('#auth').hidden = false; aErr('Confirm your email first, then log in.'); return; }
+
+  $('#auth').hidden = true;
+  try {
+    await loadAll();
+    const c = await db.from('consents').select('*').eq('user_id', me.id).eq('kind', 'health_data')
+      .order('created_at', { ascending: false }).limit(1).maybeSingle();
+    healthConsent = c.data;
+  } catch (e) {
+    console.error(e);
+    toast('Some data could not load');
+  }
+  go('home');
+}
+
+boot();
+</script>
+</body>
+</html>

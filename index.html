@@ -1,2 +1,812 @@
-const SUPABASE_URL = 'PASTE_YOUR_PROJECT_URL_HERE';
-const SUPABASE_ANON_KEY = 'PASTE_YOUR_ANON_KEY_HERE';
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Dstars — Open before you are</title>
+<meta name="description" content="Gyms, coaching and supplements across Metro Manila. Open from five in the morning.">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+
+<!-- ==========================================================
+     THE ONLY LINES YOU NEED TO EDIT
+
+     In Supabase:  Settings -> API
+       "Project URL"      goes in the first line
+       "anon public" key  goes in the second line
+
+     The anon key is meant to be public. Your security rules are
+     what protect the data. NEVER put the service_role key here.
+     ========================================================== -->
+<script>
+  const SUPABASE_URL = https://llgokvufalwjwndrndpb.supabase.co;
+  const SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxsZ29rdnVmYWx3anduZHJuZHBiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3ODY3ODYsImV4cCI6MjEwNTM2Mjc4Nn0.hRAZU7M0yn_zJ9kzu-qDopHJbauPyvQ4zxiIklT-_TA;
+
+  const CONTACT = {
+    phone: '+63 2 8555 0100',
+    email: 'support@dstars.fit',
+  };
+</script>
+<!-- ==========  nothing below needs editing  ========== -->
+
+<style>
+:root{
+  --black:#000000; --coal:#101013; --bone:#F2F0EC;
+  --red:#E01B24; --ash:#9C9CA3;
+  --hair:rgba(255,255,255,.14); --hair-dark:rgba(0,0,0,.16);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--black);color:#fff;
+  font-family:Archivo,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-variation-settings:'wdth' 100,'wght' 400;
+  font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  font-feature-settings:'tnum' 1;
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--red);outline-offset:4px}
+
+.ex{font-variation-settings:'wdth' 125,'wght' 800;letter-spacing:-.005em;line-height:.92}
+.ex-md{font-variation-settings:'wdth' 118,'wght' 700}
+.wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 22px}
+
+header{position:sticky;top:0;z-index:60;background:rgba(0,0,0,.82);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--hair)}
+.bar{display:flex;align-items:center;height:58px;gap:20px}
+.mark{display:flex;align-items:center;gap:9px;font-variation-settings:'wdth' 125,'wght' 800;font-size:18px}
+.bar nav{display:none;margin-left:auto;gap:26px;font-size:14px;color:var(--ash)}
+.bar nav a:hover{color:#fff}
+.bar .join{margin-left:auto;background:var(--red);color:#fff;padding:9px 18px;
+  font-size:13.5px;font-variation-settings:'wdth' 112,'wght' 700}
+@media(min-width:800px){.bar nav{display:flex}.bar .join{margin-left:26px}}
+
+.hero{padding:clamp(48px,11vw,104px) 0 clamp(40px,8vw,72px);position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;left:-10%;top:-30%;width:70%;height:120%;z-index:0;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(224,27,36,.30),transparent 72%)}
+.hero>*{position:relative;z-index:1}
+.kicker{font-size:13px;color:var(--ash);font-variation-settings:'wdth' 100,'wght' 600;margin:0 0 18px}
+.kicker b{color:var(--red);font-variation-settings:'wdth' 100,'wght' 700}
+.clock{font-variation-settings:'wdth' 125,'wght' 900;
+  font-size:clamp(84px,25vw,230px);line-height:.82;letter-spacing:-.035em;margin:0}
+.clock .digit{display:inline-block}
+.close{font-variation-settings:'wdth' 125,'wght' 800;font-size:clamp(28px,7vw,58px);
+  color:var(--ash);line-height:1;margin:.18em 0 0;letter-spacing:-.02em}
+.lede{max-width:30rem;color:var(--ash);font-size:clamp(16px,2.4vw,20px);margin:26px 0 0}
+.lede strong{color:#fff;font-variation-settings:'wdth' 100,'wght' 700}
+.acts{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:15px 28px;
+  font-size:15px;font-variation-settings:'wdth' 112,'wght' 700;transition:transform .12s ease,background .2s}
+.btn:active{transform:translateY(1px)}
+.btn-red{background:var(--red);color:#fff}
+.btn-red:hover{background:#c4151d}
+.btn-line{border:1px solid var(--hair);color:#fff}
+.btn-line:hover{border-color:#fff}
+.btn-dark{background:var(--black);color:#fff}
+
+@media(prefers-reduced-motion:no-preference){
+  .clock .digit{opacity:0;transform:translateY(.14em);animation:rise .62s cubic-bezier(.2,.8,.2,1) forwards}
+  .clock .digit:nth-child(1){animation-delay:.06s}
+  .clock .digit:nth-child(2){animation-delay:.12s}
+  .clock .digit:nth-child(3){animation-delay:.18s}
+  .clock .digit:nth-child(4){animation-delay:.24s}
+  .clock .digit:nth-child(5){animation-delay:.30s}
+}
+@keyframes rise{to{opacity:1;transform:none}}
+
+.sec{padding:clamp(52px,9vw,96px) 0}
+.sec.bone{background:var(--bone);color:var(--black)}
+.head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:clamp(26px,4vw,44px)}
+.head h2{margin:0;font-size:clamp(30px,6.5vw,60px)}
+.head .note{font-size:14px;color:var(--ash);max-width:20rem;text-align:right}
+.sec.bone .head .note{color:#5A5A62}
+
+.board{border-top:1px solid var(--hair)}
+.brow{display:grid;grid-template-columns:1fr auto;gap:6px 20px;padding:22px 0;
+  border-bottom:1px solid var(--hair);align-items:baseline}
+.brow .nm{font-variation-settings:'wdth' 118,'wght' 700;font-size:clamp(21px,4.5vw,32px);line-height:1.05}
+.brow .ad{grid-column:1/-1;color:var(--ash);font-size:14.5px;margin-top:2px}
+.brow .hr{font-variation-settings:'wdth' 125,'wght' 700;font-size:clamp(15px,3vw,20px);
+  color:var(--red);white-space:nowrap}
+.brow .go{grid-column:1/-1;margin-top:12px;font-size:13.5px;color:var(--ash);
+  border-bottom:1px solid var(--hair);display:inline-block;padding-bottom:2px;justify-self:start}
+.brow .go:hover{color:#fff;border-color:#fff}
+
+.plans{display:grid;gap:1px;background:var(--hair-dark);border:1px solid var(--hair-dark)}
+@media(min-width:800px){.plans{grid-template-columns:repeat(3,1fr)}}
+.plan{background:var(--bone);padding:clamp(24px,4vw,36px);display:flex;flex-direction:column}
+.plan.best{background:var(--black);color:#fff}
+.plan .pn{font-size:20px;margin:0}
+.plan .amt{font-variation-settings:'wdth' 125,'wght' 900;font-size:clamp(44px,9vw,68px);
+  line-height:.9;letter-spacing:-.035em;margin:16px 0 4px}
+.plan.best .amt{color:var(--red)}
+.plan .len{font-size:14px;color:#5A5A62;margin:0}
+.plan.best .len{color:var(--ash)}
+.plan ul{list-style:none;padding:0;margin:24px 0 0;display:grid;gap:10px;font-size:15px}
+.plan li{display:grid;grid-template-columns:auto 1fr;gap:10px;color:#3A3A42}
+.plan.best li{color:var(--ash)}
+.plan li i{font-style:normal;color:var(--red);font-variation-settings:'wdth' 100,'wght' 800}
+.plan .btn{margin-top:28px}
+.plan .tag{font-size:12px;color:var(--red);font-variation-settings:'wdth' 112,'wght' 700;margin:0 0 10px}
+
+.shelf{display:grid;gap:1px;background:var(--hair)}
+@media(min-width:560px){.shelf{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){.shelf{grid-template-columns:repeat(4,1fr)}}
+.item{background:var(--black);padding:26px 22px 22px;display:flex;flex-direction:column;min-height:190px}
+.item .ct{font-size:12px;color:var(--ash);margin:0}
+.item .nm{font-variation-settings:'wdth' 112,'wght' 700;font-size:17px;line-height:1.25;margin:8px 0 0}
+.item .pr{font-variation-settings:'wdth' 125,'wght' 800;font-size:26px;letter-spacing:-.02em;
+  margin:auto 0 0;padding-top:20px}
+
+.crew{display:grid;gap:1px;background:var(--hair-dark)}
+@media(min-width:660px){.crew{grid-template-columns:repeat(3,1fr)}}
+.coach{background:var(--bone);padding:28px 24px;display:flex;flex-direction:column}
+.coach .yr{font-variation-settings:'wdth' 125,'wght' 900;font-size:46px;line-height:1;color:var(--red);
+  letter-spacing:-.03em}
+.coach .yl{font-size:12.5px;color:#5A5A62;margin:0 0 16px}
+.coach .nm{font-size:20px;line-height:1.15;margin:0}
+.coach .hl{font-size:14.5px;color:#3A3A42;margin:4px 0 0}
+.coach .sp{margin:16px 0 0;font-size:13px;color:#5A5A62}
+
+.news{display:grid;gap:1px;background:var(--hair)}
+@media(min-width:760px){.news{grid-template-columns:repeat(3,1fr)}}
+.story{background:var(--black);padding:26px 22px}
+.story h4{font-variation-settings:'wdth' 112,'wght' 700;font-size:18px;line-height:1.25;margin:0}
+.story p{color:var(--ash);font-size:14.5px;margin:8px 0 0}
+.story time{display:block;margin-top:14px;font-size:12.5px;color:#5A5A62}
+.story .pin{font-size:11.5px;color:var(--red);font-variation-settings:'wdth' 112,'wght' 700;margin:0 0 8px}
+
+.faq details{border-bottom:1px solid var(--hair-dark);padding:20px 0}
+.faq summary{list-style:none;cursor:pointer;font-variation-settings:'wdth' 112,'wght' 700;font-size:17px;
+  display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:'+';color:var(--red);font-variation-settings:'wdth' 100,'wght' 800}
+.faq details[open] summary::after{content:'\2013'}
+.faq p{margin:12px 0 0;color:#3A3A42;font-size:16px;max-width:40rem}
+
+footer{padding:clamp(44px,7vw,72px) 0 40px;border-top:1px solid var(--hair)}
+.fg{display:grid;gap:34px}
+@media(min-width:760px){.fg{grid-template-columns:2fr 1fr 1fr}}
+footer h5{margin:0 0 12px;font-size:12.5px;color:var(--ash);font-variation-settings:'wdth' 100,'wght' 600}
+footer ul{list-style:none;padding:0;margin:0;display:grid;gap:9px;font-size:15px}
+footer li a{color:var(--ash)}
+footer li a:hover{color:#fff}
+
+.skel{background:rgba(255,255,255,.06);height:150px;animation:bl 1.5s ease-in-out infinite}
+.sec.bone .skel{background:rgba(0,0,0,.06)}
+@keyframes bl{0%,100%{opacity:.5}50%{opacity:1}}
+.none{color:var(--ash);font-size:15px;padding:26px 0}
+.sec.bone .none{color:#5A5A62}
+
+.flag{background:var(--red);color:#fff;font-size:13.5px;padding:11px 22px;text-align:center;
+  font-variation-settings:'wdth' 100,'wght' 600}
+.flag button{text-decoration:underline;font-variation-settings:'wdth' 100,'wght' 800}
+.flag code{background:rgba(0,0,0,.25);padding:2px 6px;font-size:12.5px}
+
+dialog{border:0;padding:0;max-width:430px;width:92%;background:var(--coal);color:#fff;
+  box-shadow:0 30px 90px rgba(0,0,0,.7);border:1px solid var(--hair)}
+dialog::backdrop{background:rgba(0,0,0,.7)}
+.dlg{padding:28px}
+.dlg h3{margin:0 0 8px;font-variation-settings:'wdth' 118,'wght' 800;font-size:22px}
+.dlg p{margin:0 0 18px;color:var(--ash);font-size:14px}
+.dlg label{display:block;font-size:12.5px;color:var(--ash);margin:14px 0 6px}
+.dlg input{width:100%;padding:12px 14px;border:1px solid var(--hair);background:var(--black);
+  color:#fff;font:inherit;font-size:14px;outline:none}
+.dlg input:focus{border-color:var(--red)}
+
+/* ---- auth in the header ---- */
+.auth{margin-left:auto;display:flex;align-items:center;gap:6px}
+.signin{color:var(--ash);font-size:13.5px;padding:9px 12px}
+.signin:hover{color:#fff}
+.whoami{display:flex;align-items:center;gap:10px;font-size:13.5px}
+.whoami .nm{font-variation-settings:'wdth' 112,'wght' 700}
+@media(min-width:800px){.auth{margin-left:26px}}
+
+/* ---- stats band: red, loud, breaks up the page ---- */
+.band{background:var(--red);color:#fff;padding:clamp(28px,5vw,44px) 0;
+  background-image:repeating-linear-gradient(115deg,rgba(0,0,0,.10) 0 2px,transparent 2px 22px)}
+.bandgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:26px 20px}
+@media(min-width:760px){.bandgrid{grid-template-columns:repeat(4,1fr)}}
+.bandgrid>div{display:flex;flex-direction:column}
+.bn{font-variation-settings:'wdth' 125,'wght' 900;font-size:clamp(38px,8vw,60px);
+  line-height:.9;letter-spacing:-.04em}
+.bl{font-size:13.5px;margin-top:6px;color:rgba(255,255,255,.78)}
+
+/* ---- signed-in panel ---- */
+.mine{border:1px solid var(--hair);padding:clamp(22px,4vw,34px);
+  display:grid;gap:22px}
+@media(min-width:700px){.mine{grid-template-columns:repeat(3,1fr)}}
+.mine .k{font-size:13px;color:var(--ash);margin:0}
+.mine .v{font-variation-settings:'wdth' 125,'wght' 800;font-size:clamp(24px,5vw,36px);
+  line-height:1;letter-spacing:-.03em;margin:8px 0 0}
+.mine .v.red{color:var(--red)}
+
+/* ---- auth dialog ---- */
+#auth{max-width:470px}
+#auth .dlg{position:relative}
+.tabs{display:flex;gap:2px;margin-bottom:22px;background:var(--black);padding:3px}
+.tab{flex:1;padding:12px;font-size:13.5px;color:var(--ash);
+  font-variation-settings:'wdth' 112,'wght' 700}
+.tab.on{background:var(--coal);color:#fff}
+#auth label{display:block;font-size:12.5px;color:var(--ash);margin:14px 0 6px}
+#auth input[type=text],#auth input[type=email],#auth input[type=tel],
+#auth input[type=date],#auth input[type=password],#auth input:not([type]){
+  width:100%;padding:12px 14px;border:1px solid var(--hair);background:var(--black);
+  color:#fff;font:inherit;font-size:14px;outline:none}
+#auth input:focus{border-color:var(--red)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.two label{margin-top:0}
+.check{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;
+  margin-top:18px;font-size:13px;color:var(--ash);line-height:1.5}
+.check input{width:18px;height:18px;margin:2px 0 0;accent-color:#E01B24}
+.check b{color:#fff;font-variation-settings:'wdth' 100,'wght' 700}
+.msg{margin:16px 0 0;font-size:13.5px;color:var(--red);
+  font-variation-settings:'wdth' 100,'wght' 600}
+.msg.ok{color:#5FD48A}
+.fine{margin:14px 0 0;font-size:12px;color:#5A5A62;text-align:center}
+.x{position:absolute;top:-6px;right:-4px;width:40px;height:40px;font-size:26px;color:var(--ash)}
+.x:hover{color:#fff}
+
+</style>
+</head>
+<body>
+
+<div id="flag" class="flag" hidden></div>
+
+<header>
+  <div class="wrap bar">
+    <a class="mark" href="#top">
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.6l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 16.8 5.9 20.2l1.4-6.8L2.2 8.7l6.9-.8z" fill="#E01B24"/></svg>
+      DSTARS
+    </a>
+    <nav>
+      <a href="#branches">Branches</a>
+      <a href="#membership">Membership</a>
+      <a href="#supplements">Supplements</a>
+      <a href="#coaches">Coaches</a>
+    </nav>
+    <div class="auth" id="authBar">
+      <button class="signin" id="signInBtn">Sign in</button>
+      <button class="join" id="joinBtn">Join</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap">
+      <p class="kicker">Metro Manila &middot; <b id="branchCount">three branches</b></p>
+      <p class="clock" id="clock" aria-label="Open from five in the morning">
+        <span class="digit">0</span><span class="digit">5</span><span class="digit">:</span><span class="digit">0</span><span class="digit">0</span>
+      </p>
+      <p class="close" id="closeLine">until 23:00</p>
+      <p class="lede">
+        Before work, after work, and most of the hours between.
+        <strong>Walk in, train, get on with your day.</strong>
+      </p>
+      <div class="acts">
+        <a class="btn btn-red" href="#branches">Find your branch</a>
+        <a class="btn btn-line" href="#membership">See the prices</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="mine" hidden>
+    <div class="wrap">
+      <div class="head"><h2 class="ex">Your membership</h2></div>
+      <div class="mine" id="mineBody"></div>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap bandgrid" id="band">
+      <div><span class="bn" id="bStat1">3</span><span class="bl">branches</span></div>
+      <div><span class="bn" id="bStat2">18h</span><span class="bl">open every day</span></div>
+      <div><span class="bn" id="bStat3">0</span><span class="bl">joining fee</span></div>
+      <div><span class="bn" id="bStat4">18+</span><span class="bl">members only</span></div>
+    </div>
+  </section>
+
+  <section class="sec" id="branches">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="ex">Branches</h2>
+        <p class="note">Walk in without an appointment. Someone will show you around.</p>
+      </div>
+      <div class="board" id="board"><div class="skel"></div></div>
+    </div>
+  </section>
+
+  <section class="sec bone" id="membership">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="ex">Membership</h2>
+        <p class="note">One membership covers every branch. No joining fee.</p>
+      </div>
+      <div class="plans" id="plans"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+    </div>
+  </section>
+
+  <section class="sec" id="supplements">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="ex">Supplements</h2>
+        <p class="note">Order in the app, collect at the front desk.</p>
+      </div>
+      <div class="shelf" id="shelf"><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+    </div>
+  </section>
+
+  <section class="sec bone" id="coaches">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="ex">Coaches</h2>
+        <p class="note">Every coach is approved by Dstars before they appear here.</p>
+      </div>
+      <div class="crew" id="crew"></div>
+    </div>
+  </section>
+
+  <section class="sec" id="news" hidden>
+    <div class="wrap">
+      <div class="head"><h2 class="ex">What's on</h2></div>
+      <div class="news" id="newsGrid"></div>
+    </div>
+  </section>
+
+  <section class="sec bone">
+    <div class="wrap" style="max-width:760px">
+      <div class="head"><h2 class="ex">Questions</h2></div>
+      <div class="faq">
+        <details><summary>Can I use any branch?</summary><p>Yes. One membership covers every Dstars branch, every day.</p></details>
+        <details><summary>Can I freeze my membership?</summary><p>Up to 60 days a year. Tell the front desk and we'll pause it from that day.</p></details>
+        <details><summary>What happens when it expires?</summary><p>Access stops, but your training history stays. Renew whenever you're ready and pick up where you left off.</p></details>
+        <details><summary>Is there a joining fee?</summary><p>No. You pay for the term and nothing else.</p></details>
+        <details><summary>How old do I need to be?</summary><p>Dstars membership is 18 and over.</p></details>
+        <details><summary>Do I need to book?</summary><p>Not to train. Walk in during opening hours. Coaching sessions are booked with your coach.</p></details>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap fg">
+    <div>
+      <div class="mark" style="margin-bottom:14px">
+        <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.6l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 16.8 5.9 20.2l1.4-6.8L2.2 8.7l6.9-.8z" fill="#E01B24"/></svg>
+        DSTARS
+      </div>
+      <p style="color:var(--ash);font-size:15px;margin:0">Train like it counts.</p>
+      <p style="margin:16px 0 0;font-size:15px" id="contact"></p>
+    </div>
+    <div>
+      <h5>Explore</h5>
+      <ul>
+        <li><a href="#branches">Branches</a></li>
+        <li><a href="#membership">Membership</a></li>
+        <li><a href="#supplements">Supplements</a></li>
+        <li><a href="#coaches">Coaches</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Legal</h5>
+      <ul id="legal"><li><span style="color:#5A5A62">Published soon</span></li></ul>
+      <p style="color:#5A5A62;font-size:12.5px;margin-top:26px" id="copy"></p>
+    </div>
+  </div>
+</footer>
+
+<dialog id="auth">
+  <div class="dlg">
+    <div class="tabs">
+      <button class="tab on" data-tab="in">Sign in</button>
+      <button class="tab" data-tab="up">Be a member</button>
+    </div>
+
+    <form id="formIn">
+      <label for="inEmail">Email</label>
+      <input id="inEmail" type="email" autocomplete="username" required>
+      <label for="inPass">Password</label>
+      <input id="inPass" type="password" autocomplete="current-password" required>
+      <p class="msg" id="msgIn" hidden></p>
+      <button class="btn btn-red" style="width:100%;margin-top:22px" id="doIn">Sign in</button>
+    </form>
+
+    <form id="formUp" hidden>
+      <div class="two">
+        <div><label for="upFirst">First name</label><input id="upFirst" required></div>
+        <div><label for="upLast">Last name</label><input id="upLast" required></div>
+      </div>
+      <label for="upEmail">Email</label>
+      <input id="upEmail" type="email" autocomplete="username" required>
+      <label for="upPhone">Phone</label>
+      <input id="upPhone" type="tel" placeholder="+63 917 000 0000" required>
+      <label for="upDob">Date of birth</label>
+      <input id="upDob" type="date" required>
+      <label for="upPass">Password</label>
+      <input id="upPass" type="password" autocomplete="new-password" minlength="8" required>
+
+      <label class="check"><input type="checkbox" id="okTerms">
+        <span>I accept the terms and the privacy policy.<b id="legalNote"></b></span></label>
+      <label class="check"><input type="checkbox" id="okHealth">
+        <span>I consent to Dstars handling my <b>health data</b> &mdash; body scans, nutrition logs and
+        measurements &mdash; to give me training guidance. Separate from the terms, and I can withdraw it
+        any time.</span></label>
+
+      <p class="msg" id="msgUp" hidden></p>
+      <button class="btn btn-red" style="width:100%;margin-top:20px" id="doUp">Create my account</button>
+      <p class="fine">Dstars membership is 18 and over. You'll get a confirmation email.</p>
+    </form>
+
+    <button class="x" id="authX" aria-label="Close">&times;</button>
+  </div>
+</dialog>
+
+<dialog id="dlg">
+  <form method="dialog" class="dlg">
+    <h3>Connect your database</h3>
+    <p>Both values are in Supabase under Settings &rarr; API. They're kept in this browser only.</p>
+    <label for="u">Project URL</label>
+    <input id="u" placeholder="https://abcdefgh.supabase.co" autocomplete="off" spellcheck="false">
+    <label for="k">anon public key</label>
+    <input id="k" placeholder="eyJhbGciOi..." autocomplete="off" spellcheck="false">
+    <div style="display:flex;gap:10px;margin-top:24px">
+      <button value="cancel" class="btn btn-line" style="flex:1">Later</button>
+      <button value="ok" id="save" class="btn btn-red" style="flex:1.4">Connect</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const $ = (s) => document.querySelector(s);
+const peso = (n) => '\u20B1' + Number(n).toLocaleString('en-PH', { maximumFractionDigits: 0 });
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
+const WORD = ['no','one','two','three','four','five','six','seven','eight','nine'];
+
+function creds() {
+  if (SUPABASE_URL.indexOf('http') === 0 && SUPABASE_ANON_KEY.length > 20)
+    return { url: SUPABASE_URL, key: SUPABASE_ANON_KEY, src: 'file' };
+  try {
+    const url = localStorage.getItem('ds_url'), key = localStorage.getItem('ds_key');
+    if (url && key) return { url, key, src: 'browser' };
+  } catch (e) {}
+  return null;
+}
+const C = creds();
+const db = (C && window.supabase) ? window.supabase.createClient(C.url, C.key) : null;
+
+if (!C) {
+  const f = $('#flag'); f.hidden = false;
+  f.innerHTML = 'Sample content \u2014 <button id="cbtn">connect your database</button> or fill in <code>SUPABASE_URL</code> in this file.';
+  $('#cbtn').onclick = function () { $('#dlg').showModal(); };
+} else if (C.src === 'browser') {
+  const f = $('#flag'); f.hidden = false;
+  f.textContent = 'Connected in this browser only. Edit the two lines at the top of the file so everyone sees it.';
+}
+$('#save').addEventListener('click', function () {
+  const url = $('#u').value.trim(), key = $('#k').value.trim();
+  if (url.indexOf('http') !== 0 || key.length < 20) return;
+  try { localStorage.setItem('ds_url', url); localStorage.setItem('ds_key', key); } catch (e) {}
+  setTimeout(function () { location.reload(); }, 120);
+});
+
+const SAMPLE = {
+  branches: [
+    { name: 'Dstars BGC', address: '9th Avenue corner 32nd Street, Taguig', phone: '+63 2 8555 0101', lat: 14.5507, lng: 121.0491, hours: { mon_fri: '05:00-23:00', sat: '06:00-22:00' } },
+    { name: 'Dstars Makati', address: 'Jupiter Street, Bel-Air, Makati', phone: '+63 2 8555 0102', lat: 14.561, lng: 121.028, hours: { mon_fri: '05:00-23:00' } },
+    { name: 'Dstars QC', address: 'Tomas Morato Avenue, Quezon City', phone: '+63 2 8555 0103', lat: 14.633, lng: 121.035, hours: { mon_fri: '06:00-22:00' } }
+  ],
+  plans: [
+    { name: 'Monthly', price: 1800, duration_days: 30, perks: ['Full gym access', 'Group classes'] },
+    { name: '6 months', price: 9600, duration_days: 182, perks: ['Full gym access', 'Group classes', 'One InBody scan'] },
+    { name: 'Annual', price: 17400, duration_days: 365, perks: ['Full gym access', 'Quarterly scan', 'Two coach sessions'] }
+  ],
+  products: [
+    { name: 'Dstars Whey Isolate', base_price: 2450, cat: 'Whey Protein' },
+    { name: 'Red Surge Pre-Workout', base_price: 1690, cat: 'Pre-Workout' },
+    { name: 'Creatine Monohydrate', base_price: 1180, cat: 'Vitamins' },
+    { name: 'Shaker Bottle 700ml', base_price: 390, cat: 'Accessories' }
+  ]
+};
+
+// Reads the real opening and closing time out of your branch data, so the
+// headline is a fact about your gym rather than a slogan.
+function spanFrom(branches) {
+  let open = null, close = null;
+  for (const b of branches) {
+    const vals = Object.values(b.hours || {});
+    for (const v of vals) {
+      const m = String(v).match(/(\d{1,2}):(\d{2})\s*[-\u2013]\s*(\d{1,2}):(\d{2})/);
+      if (!m) continue;
+      const o = (+m[1]) * 60 + (+m[2]), c = (+m[3]) * 60 + (+m[4]);
+      if (open === null || o < open) open = o;
+      if (close === null || c > close) close = c;
+    }
+  }
+  if (open === null) return null;
+  const fmt = (t) => String(Math.floor(t / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0');
+  return { open: fmt(open), close: fmt(close) };
+}
+
+function paintHero(branches) {
+  $('#branchCount').textContent =
+    (WORD[branches.length] || branches.length) + (branches.length === 1 ? ' branch' : ' branches');
+  const s = spanFrom(branches);
+  if (!s) return;
+  $('#clock').innerHTML = s.open.split('').map((ch) => '<span class="digit">' + ch + '</span>').join('');
+  $('#clock').setAttribute('aria-label', 'Open from ' + s.open);
+  $('#closeLine').textContent = 'until ' + s.close;
+}
+
+
+function paintBand(branches, plans) {
+  $('#bStat1').textContent = branches.length || 3;
+  const s = spanFrom(branches);
+  if (s) {
+    const open = +s.open.split(':')[0], close = +s.close.split(':')[0];
+    $('#bStat2').textContent = Math.max(1, close - open) + 'h';
+  }
+  const cheapest = plans.length ? Math.min.apply(null, plans.map(function (p) { return +p.price; })) : null;
+  if (cheapest !== null) {
+    $('#bStat3').textContent = peso(cheapest);
+    $('#bStat3').nextElementSibling.textContent = 'to start';
+  }
+}
+
+function paintBranches(list) {
+  $('#board').innerHTML = list.length ? list.map(function (b) {
+    const hrs = Object.values(b.hours || {})[0] || '';
+    return '<div class="brow">' +
+      '<div class="nm">' + esc(b.name) + '</div>' +
+      '<div class="hr">' + esc(hrs) + '</div>' +
+      '<div class="ad">' + esc(b.address) + (b.phone ? ' \u00b7 ' + esc(b.phone) : '') + '</div>' +
+      '<a class="go" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination=' +
+        b.lat + ',' + b.lng + '">Directions</a>' +
+      '</div>';
+  }).join('') : '<p class="none">Branch details coming soon.</p>';
+}
+
+function paintPlans(list) {
+  $('#plans').innerHTML = list.length ? list.map(function (p, i) {
+    const best = i === list.length - 1;
+    return '<div class="plan ' + (best ? 'best' : '') + '">' +
+      (best ? '<p class="tag">Best value</p>' : '') +
+      '<p class="pn ex-md">' + esc(p.name) + '</p>' +
+      '<p class="amt">' + peso(p.price) + '</p>' +
+      '<p class="len">' + p.duration_days + ' days</p>' +
+      '<ul>' + (p.perks || []).map(function (k) {
+        return '<li><i>\u2715</i><span>' + esc(k) + '</span></li>';
+      }).join('') + '</ul>' +
+      '<a class="btn ' + (best ? 'btn-red' : 'btn-dark') + '" href="#branches">Join at a branch</a>' +
+      '</div>';
+  }).join('') : '<p class="none">No plans published yet.</p>';
+}
+
+function paintShelf(list) {
+  $('#shelf').innerHTML = list.length ? list.map(function (p) {
+    return '<div class="item">' +
+      '<p class="ct">' + esc(p.cat) + '</p>' +
+      '<p class="nm">' + esc(p.name) + '</p>' +
+      '<p class="pr">' + peso(p.base_price) + '</p></div>';
+  }).join('') : '<p class="none">Catalogue coming soon.</p>';
+}
+
+function paintCrew(list) {
+  $('#crew').innerHTML = list.length ? list.map(function (c) {
+    return '<div class="coach">' +
+      '<div class="yr">' + (c.years == null ? '\u2014' : c.years) + '</div>' +
+      '<p class="yl">years coaching</p>' +
+      '<p class="nm ex-md">' + esc(c.first) + ' ' + esc(c.last) + '</p>' +
+      '<p class="hl">' + esc(c.headline) + '</p>' +
+      ((c.specialties || []).length ? '<p class="sp">' + c.specialties.map(esc).join(' \u00b7 ') + '</p>' : '') +
+      '</div>';
+  }).join('') : '<p class="none">Coach profiles appear here once each coach is approved.</p>';
+}
+
+function paintNews(list) {
+  if (!list.length) return;
+  $('#news').hidden = false;
+  $('#newsGrid').innerHTML = list.map(function (p) {
+    return '<div class="story">' +
+      (p.is_pinned ? '<p class="pin">Pinned</p>' : '') +
+      '<h4>' + esc(p.title) + '</h4>' +
+      '<p>' + esc(p.body) + '</p>' +
+      '<time>' + new Date(p.published_at).toLocaleDateString('en-PH', { day: 'numeric', month: 'long', year: 'numeric' }) + '</time>' +
+      '</div>';
+  }).join('');
+}
+
+function paintContact() {
+  $('#contact').innerHTML =
+    (CONTACT.phone ? '<a href="tel:' + esc(CONTACT.phone) + '" style="display:block;color:#fff">' + esc(CONTACT.phone) + '</a>' : '') +
+    (CONTACT.email ? '<a href="mailto:' + esc(CONTACT.email) + '" style="display:block;color:var(--ash)">' + esc(CONTACT.email) + '</a>' : '');
+  $('#copy').textContent = '\u00a9 ' + new Date().getFullYear() + ' Dstars';
+}
+
+function fallback() {
+  paintHero(SAMPLE.branches);
+  paintBranches(SAMPLE.branches);
+  paintPlans(SAMPLE.plans);
+  paintShelf(SAMPLE.products);
+  paintCrew([]);
+}
+
+(async function load() {
+  paintContact();
+  if (!db) { paintBand(SAMPLE.branches, SAMPLE.plans); return fallback(); }
+  try {
+    const res = await Promise.all([
+      db.from('branches').select('name,address,phone,hours,lat,lng').eq('is_active', true).order('name'),
+      db.from('membership_plans').select('name,price,duration_days,perks').eq('is_active', true).order('sort_order'),
+      db.from('products').select('name,base_price,product_categories(name)').eq('is_active', true).order('sort_order').limit(8),
+      db.from('coach_profiles').select('headline,years_experience,specialties,profiles(first_name,last_name)').eq('is_published', true).order('sort_order').limit(6),
+      db.from('posts').select('title,body,published_at,is_pinned').not('published_at', 'is', null).order('is_pinned', { ascending: false }).order('published_at', { ascending: false }).limit(3),
+      db.from('legal_documents').select('kind,title').eq('is_published', true)
+    ]);
+    const branches = res[0].data || [];
+    paintHero(branches.length ? branches : SAMPLE.branches);
+    paintBand(branches, res[1].data || []);
+    paintBranches(branches);
+    paintPlans((res[1].data || []).map(function (p) {
+      return { name: p.name, price: p.price, duration_days: p.duration_days,
+               perks: Array.isArray(p.perks) ? p.perks : [] };
+    }));
+    paintShelf((res[2].data || []).map(function (p) {
+      return { name: p.name, base_price: p.base_price, cat: p.product_categories ? p.product_categories.name : '' };
+    }));
+    paintCrew((res[3].data || []).map(function (c) {
+      return { first: c.profiles ? c.profiles.first_name : '', last: c.profiles ? c.profiles.last_name : '',
+               headline: c.headline, years: c.years_experience, specialties: c.specialties };
+    }));
+    paintNews(res[4].data || []);
+    const docs = res[5].data || [];
+    if (docs.length) {
+      $('#legalNote').textContent = '';
+      $('#legal').innerHTML = docs.map(function (d) {
+        return '<li><span style="color:var(--ash)">' + esc(d.title) + '</span></li>';
+      }).join('');
+    }
+  } catch (e) {
+    console.error(e);
+    const f = $('#flag'); f.hidden = false;
+    f.textContent = "Couldn't reach the database \u2014 showing sample content. Check the URL and key at the top of this file.";
+    fallback();
+  }
+})();
+
+/* ============================================================
+   Accounts. Same Supabase project as the app, so an account made
+   here is the same account in the app later.
+   ============================================================ */
+const A = {
+  dlg: $('#auth'),
+  open(tab) {
+    if (!db) { alert('Connect the database first — see the banner at the top.'); return; }
+    A.tab(tab || 'in');
+    A.dlg.showModal();
+  },
+  tab(which) {
+    document.querySelectorAll('.tab').forEach(function (t) {
+      t.classList.toggle('on', t.dataset.tab === which);
+    });
+    $('#formIn').hidden = which !== 'in';
+    $('#formUp').hidden = which !== 'up';
+  },
+  say(el, text, ok) {
+    const m = $(el); m.hidden = false; m.textContent = text; m.classList.toggle('ok', !!ok);
+  }
+};
+
+$('#signInBtn').onclick = function () { A.open('in'); };
+$('#joinBtn').onclick = function () { A.open('up'); };
+$('#authX').onclick = function () { A.dlg.close(); };
+document.querySelectorAll('.tab').forEach(function (t) {
+  t.onclick = function () { A.tab(t.dataset.tab); };
+});
+
+$('#formIn').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const btn = $('#doIn'); btn.disabled = true;
+  const r = await db.auth.signInWithPassword({
+    email: $('#inEmail').value.trim(), password: $('#inPass').value
+  });
+  btn.disabled = false;
+  if (r.error) return A.say('#msgIn', r.error.message);
+  A.dlg.close(); showMember();
+});
+
+$('#formUp').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  if (!$('#okTerms').checked) return A.say('#msgUp', 'Please accept the terms to continue.');
+
+  const dob = $('#upDob').value;
+  const age = (Date.now() - new Date(dob).getTime()) / 3.15576e10;
+  if (!(age >= 18)) return A.say('#msgUp', 'Dstars membership is 18 and over.');
+
+  const btn = $('#doUp'); btn.disabled = true;
+  const r = await db.auth.signUp({
+    email: $('#upEmail').value.trim(),
+    password: $('#upPass').value,
+    options: { data: {
+      first_name: $('#upFirst').value.trim(),
+      last_name: $('#upLast').value.trim(),
+      phone: $('#upPhone').value.trim()
+    } }
+  });
+  btn.disabled = false;
+  if (r.error) return A.say('#msgUp', r.error.message);
+
+  // age and health consent are recorded against the account, as the
+  // Data Privacy Act expects — consent is separate from the terms
+  if (r.data.user) {
+    try {
+      await db.from('profiles').update({ date_of_birth: dob }).eq('id', r.data.user.id);
+      await db.from('consents').insert({
+        user_id: r.data.user.id, kind: 'health_data',
+        granted: $('#okHealth').checked, granted_at: new Date().toISOString()
+      });
+    } catch (err) { console.error(err); }
+  }
+  A.say('#msgUp', 'Account created. Check your email to confirm it, then sign in.', true);
+});
+
+async function showMember() {
+  if (!db) return;
+  const sess = await db.auth.getSession();
+  const user = sess.data.session ? sess.data.session.user : null;
+  const bar = $('#authBar');
+
+  if (!user) {
+    bar.innerHTML = '<button class="signin" id="signInBtn">Sign in</button>' +
+                    '<button class="join" id="joinBtn">Join</button>';
+    $('#signInBtn').onclick = function () { A.open('in'); };
+    $('#joinBtn').onclick = function () { A.open('up'); };
+    $('#mine').hidden = true;
+    return;
+  }
+
+  const pr = await db.from('profiles').select('first_name,last_name').eq('id', user.id).maybeSingle();
+  const first = pr.data ? pr.data.first_name : 'Member';
+  bar.innerHTML = '<span class="whoami"><span class="nm">' + esc(first) + '</span>' +
+                  '<button class="signin" id="outBtn">Sign out</button></span>';
+  $('#outBtn').onclick = async function () { await db.auth.signOut(); location.reload(); };
+
+  const m = await db.from('memberships')
+    .select('membership_number,status,expires_at,membership_plans(name)')
+    .eq('user_id', user.id).order('expires_at', { ascending: false }).limit(1).maybeSingle();
+
+  $('#mine').hidden = false;
+  if (!m.data) {
+    $('#mineBody').innerHTML =
+      '<div><p class="k">Status</p><p class="v red">No plan yet</p></div>' +
+      '<div style="grid-column:2/-1;align-self:center">' +
+      '<p class="k">Pick a plan below, then finish signing up at any branch. ' +
+      'Bring one valid ID.</p></div>';
+    return;
+  }
+  const d = m.data;
+  const expired = new Date(d.expires_at) < new Date();
+  $('#mineBody').innerHTML =
+    '<div><p class="k">Plan</p><p class="v">' + esc(d.membership_plans ? d.membership_plans.name : '\u2014') + '</p></div>' +
+    '<div><p class="k">Member number</p><p class="v">' + esc(d.membership_number) + '</p></div>' +
+    '<div><p class="k">' + (expired ? 'Expired' : 'Valid until') + '</p><p class="v ' +
+      (expired ? 'red' : '') + '">' +
+      new Date(d.expires_at).toLocaleDateString('en-PH', { day: 'numeric', month: 'short', year: 'numeric' }) +
+      '</p></div>';
+}
+
+if (db) {
+  showMember();
+  db.auth.onAuthStateChange(function () { showMember(); });
+}
+
+</script>
+</body>
+</html>
